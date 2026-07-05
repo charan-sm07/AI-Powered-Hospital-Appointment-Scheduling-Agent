@@ -52,25 +52,34 @@ Create a `.env` file in the root directory (based on `.env.example`):
 
 ## 🚀 Setup & Execution
 
-### 1. Install Dependencies
-Ensure you have Node.js (v18+) and MongoDB installed and running.
+### 1. Cloud Deployment (Render)
+You can deploy this project to the cloud in one click using the button below:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render.svg)](https://render.com/deploy?repo=https://github.com/charan-sm07/AI-Powered-Hospital-Appointment-Scheduling-Agent)
+
+*Note: You will need to provide your MongoDB Atlas Connection URI and Groq API Key (optional) during setup.*
+
+### 2. Local Setup
+Ensure you have Node.js (v18+) and MongoDB installed and running locally.
+
+#### A. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Database Seeding
+#### B. Database Seeding
 Inserts 6 mock doctors (with unbooked weekly slots) and 5 patients into MongoDB:
 ```bash
 node scripts/seed.js
 ```
 
-### 3. Ingest Hospital Policy
+#### C. Ingest Hospital Policy
 Chunks and indexes the hospital policies (`knowledge/hospital_policy.md`) using local MiniLM-L6 embeddings:
 ```bash
 node scripts/run-ingest.js
 ```
 
-### 4. Start the Application
+#### D. Start the Application
 Run the local development server (with watch-mode enabled):
 ```bash
 npm run dev

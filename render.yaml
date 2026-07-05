@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: hospital-appointment-scheduler
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: MONGO_URI
+        sync: false
+        placeholder: "Enter your MongoDB Atlas Connection URI"
+      - key: GROQ_API_KEY
+        sync: false
+        placeholder: "Enter your Groq API Key (Optional)"
+      - key: SUSPICION_THRESHOLD
+        value: "0.55"
+      - key: PORT
+        value: "10000"
