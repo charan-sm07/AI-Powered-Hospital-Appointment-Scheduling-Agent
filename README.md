@@ -123,3 +123,19 @@ MediSlot AI rejects generic chatbot bubbles and gradients in favor of a clean cl
   - **Inter** for readable chat dialogue body text.
   - **IBM Plex Mono** for slot ticket parameters (looks like printed slips).
 * **EKG Heartbeat Line**: Loop-drawn SVG heartbeat trace indicates thinking states.
+
+---
+
+## 📷 Screenshots
+
+Here are some previews of the portal interface and security triage system:
+
+### 1. Landing Page (Dark Mode Alert Banner & Wait-Times)
+![Landing Page](./assets/landing-page.png)
+
+### 2. Chatbot Interface & Safety Warning (Dark Mode)
+![Chatbot Dark Mode](./assets/chatbot-dark.png)
+
+### 3. Chatbot Interface & Safety Warning (Light Mode)
+![Chatbot Light Mode](./assets/chatbot-light.png)
+
