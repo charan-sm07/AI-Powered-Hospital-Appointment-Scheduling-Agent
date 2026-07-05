@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://hospital-appointment-scheduler.onrender.com/api/:path*"
+    },
+    {
+      "source": "/admin.html",
+      "destination": "https://hospital-appointment-scheduler.onrender.com/admin.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/public/$1"
+    }
+  ]
+}
