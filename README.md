@@ -84,9 +84,32 @@ Run the local development server (with watch-mode enabled):
 ```bash
 npm run dev
 ```
+
 Open your browser and navigate to:
 * Scheduler Interface: `http://localhost:3001`
 * Admin Dashboard: `http://localhost:3001/admin.html`
+
+### 3. Docker Containerization (AWS / Azure Ready)
+This project is fully containerized using Docker. You can launch the entire system (Node.js server + MongoDB database) locally or deploy it to AWS (Elastic Beanstalk/ECS) or Azure (App Services/Container Instances) using a single command:
+
+#### A. Launch using Docker Compose
+```bash
+docker-compose up --build
+```
+This command will:
+1. Spin up a secure MongoDB container.
+2. Build the Node.js application image.
+3. Link the two services together and expose the application on `http://localhost:3001`.
+
+#### B. Seed & Ingest in Docker Container
+To seed database doctors and run policy ingest inside the running container:
+```bash
+# Seed the database
+docker exec -it medislot-web node scripts/seed.js
+
+# Ingest policy documents
+docker exec -it medislot-web node scripts/run-ingest.js
+```
 
 ---
 
