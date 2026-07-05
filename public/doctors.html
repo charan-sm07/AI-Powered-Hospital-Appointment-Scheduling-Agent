@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediSlot AI — Doctor Directory</title>
+  <meta name="description" content="View our directory of specialists, ratings, experience, insurance accepted, and real-time available slots at City General Hospital.">
+  <!-- Google Fonts: Sora & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Prevent theme flickering
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark-theme');
+    }
+  </script>
+</head>
+<body class="landing-body">
+
+  <!-- Navigation Bar -->
+  <nav class="landing-navbar">
+    <div class="landing-brand">
+      <div class="landing-brand-logo">M</div>
+      <a href="index.html" class="landing-brand-name" style="text-decoration: none;">MediSlot AI</a>
+    </div>
+    <div class="landing-nav-links">
+      <a href="index.html#services" class="landing-nav-link">Our Services</a>
+      <a href="doctors.html" class="landing-nav-link" style="color: var(--primary); font-weight: bold;">Find Doctors</a>
+      <a href="login.html" class="landing-nav-link">Staff Login</a>
+      <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle Theme" style="margin-left: 10px;">🌓</button>
+      <a href="chatbot.html" class="landing-nav-btn">Launch AI Scheduler</a>
+    </div>
+  </nav>
+
+  <!-- Title / Intro Section -->
+  <section class="landing-section" style="padding-bottom: 20px;">
+    <h1 class="landing-section-title" style="text-align: center; margin-bottom: 10px;">Our Medical Specialists</h1>
+    <p class="landing-section-subtitle" style="text-align: center; margin-bottom: 40px;">Browse active clinical staff, check rating scores, insurance coverage, and book directly using our smart scheduling assistant.</p>
+
+    <!-- Search and Filters Panel -->
+    <div class="directory-filter-panel">
+      <div class="search-box-wrapper">
+        <input type="text" id="search-input" placeholder="Search by doctor name, specialty, or accepted insurance..." class="directory-search-input">
+      </div>
+      
+      <!-- Specialization Filters -->
+      <div class="filter-group-container">
+        <span class="filter-label">Specialty:</span>
+        <div class="filter-chips-wrapper" id="specialty-chips">
+          <button class="filter-chip active" data-value="all">All Specialties</button>
+          <button class="filter-chip" data-value="Cardiology">Cardiology</button>
+          <button class="filter-chip" data-value="Dermatology">Dermatology</button>
+          <button class="filter-chip" data-value="Pediatrics">Pediatrics</button>
+          <button class="filter-chip" data-value="General Medicine">General Medicine</button>
+        </div>
+      </div>
+
+      <!-- Insurance Filters -->
+      <div class="filter-group-container" style="margin-top: 15px;">
+        <span class="filter-label">Insurance:</span>
+        <div class="filter-chips-wrapper" id="insurance-chips">
+          <button class="filter-chip active" data-value="all">All Insurances</button>
+          <button class="filter-chip" data-value="MediCare">Medicare</button>
+          <button class="filter-chip" data-value="ShieldCross">ShieldCross</button>
+          <button class="filter-chip" data-value="CareFirst">CareFirst</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Doctor Grid -->
+  <section class="landing-section" style="padding-top: 0;">
+    <div class="doctor-directory-grid" id="doctor-grid">
+      <div class="empty-state">Loading specialist directory...</div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="landing-footer-grid">
+      <div class="landing-footer-col">
+        <div class="landing-brand">
+          <div class="landing-brand-logo" style="width: 32px; height: 32px; font-size: 1rem; border-radius: 6px;">M</div>
+          <span class="landing-brand-name" style="font-size: 1.1rem;">MediSlot AI</span>
+        </div>
+        <p style="color: var(--muted); font-size: 0.85rem; line-height: 1.5; margin-top: 10px;">
+          Next-generation hospital appointment scheduling. Engineered for clinical accuracy, strict security controls, and immediate verification.
+        </p>
+      </div>
+      <div class="landing-footer-col">
+        <span class="landing-footer-title">Scheduler Platform</span>
+        <ul class="landing-footer-links">
+          <li><a href="chatbot.html" class="landing-footer-link">Open Scheduler</a></li>
+          <li><a href="login.html" class="landing-footer-link">Administrative Access</a></li>
+        </ul>
+      </div>
+      <div class="landing-footer-col">
+        <span class="landing-footer-title">Security & Policies</span>
+        <ul class="landing-footer-links">
+          <li><a href="index.html#services" class="landing-footer-link">Security Audits</a></li>
+          <li><a href="index.html#services" class="landing-footer-link">Ingestion Rules</a></li>
+        </ul>
+      </div>
+      <div class="landing-footer-col">
+        <span class="landing-footer-title">City General Hospital</span>
+        <p style="color: var(--muted); font-size: 0.85rem; line-height: 1.5;">
+          100 Medical Plaza Blvd,<br>
+          Suite 400<br>
+          Phone: +1 (800) 555-SLOT
+        </p>
+      </div>
+    </div>
+    <div class="landing-footer-bottom">
+      <span>© 2026 MediSlot AI / City General Hospital. All rights reserved.</span>
+      <span>Designed with a Calm Clinical Design System</span>
+    </div>
+  </footer>
+
+  <script>
+    let doctorsData = [];
+    let currentSpecialty = 'all';
+    let currentInsurance = 'all';
+
+    const doctorGrid = document.getElementById('doctor-grid');
+    const searchInput = document.getElementById('search-input');
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+
+    // Theme Switch Logic
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark-theme');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
+    }
+
+    // Fetch doctors from API
+    async function loadDoctors() {
+      try {
+        const res = await fetch('/api/chat/doctors');
+        if (!res.ok) throw new Error('Failed to load specialists');
+        doctorsData = await res.json();
+        renderDoctors();
+      } catch (err) {
+        doctorGrid.innerHTML = `<div class="empty-state" style="color: var(--accent);">Error loading doctors directory. Please make sure the server is active.</div>`;
+      }
+    }
+
+    function renderDoctors() {
+      const searchVal = searchInput.value.trim().toLowerCase();
+      const filtered = doctorsData.filter(doc => {
+        // Specialty match
+        const specMatch = currentSpecialty === 'all' || doc.specialization === currentSpecialty;
+        
+        // Insurance match
+        const insMatch = currentInsurance === 'all' || 
+          (doc.insurancePlansAccepted && doc.insurancePlansAccepted.some(ins => ins.toLowerCase() === currentInsurance.toLowerCase()));
+        
+        // Search text match
+        const searchMatch = !searchVal || 
+          doc.name.toLowerCase().includes(searchVal) ||
+          doc.specialization.toLowerCase().includes(searchVal) ||
+          (doc.insurancePlansAccepted && doc.insurancePlansAccepted.some(ins => ins.toLowerCase().includes(searchVal)));
+
+        return specMatch && insMatch && searchMatch;
+      });
+
+      if (filtered.length === 0) {
+        doctorGrid.innerHTML = `<div class="empty-state">No matching specialists found. Please refine your filters.</div>`;
+        return;
+      }
+
+      doctorGrid.innerHTML = filtered.map(doc => {
+        const stars = '⭐'.repeat(Math.floor(doc.rating || 5));
+        const insuranceBadges = (doc.insurancePlansAccepted || [])
+          .map(ins => `<span class="insurance-badge">${escapeHTML(ins)}</span>`)
+          .join('') || '<span class="insurance-badge none">Self-Pay Only</span>';
+
+        const slotsList = (doc.availableSlots || [])
+          .filter(slot => !slot.isBooked)
+          .slice(0, 3)
+          .map(slot => `<span class="available-slot-chip">${slot.day} ${slot.startTime}</span>`)
+          .join('') || '<span class="available-slot-chip none">Fully Booked</span>';
+
+        return `
+          <div class="doctor-dir-card">
+            <div class="doctor-dir-card-header">
+              <div class="doc-avatar-circle">${escapeHTML(doc.name.charAt(4))}</div>
+              <div>
+                <h3 class="doc-card-title">${escapeHTML(doc.name)}</h3>
+                <span class="doc-card-spec">${escapeHTML(doc.specialization)}</span>
+              </div>
+            </div>
+            <div class="doctor-dir-card-body">
+              <div class="doc-meta-row">
+                <span>Rating: <strong style="color: var(--ink);">${doc.rating || '4.5'}</strong> ${stars}</span>
+                <span>Experience: <strong style="color: var(--ink);">${doc.yearsOfExperience || 5} Years</strong></span>
+              </div>
+              <div class="doc-section-title">Accepted Insurance:</div>
+              <div class="doc-insurance-wrapper">
+                ${insuranceBadges}
+              </div>
+              <div class="doc-section-title">Upcoming Open Slots:</div>
+              <div class="doc-slots-wrapper">
+                ${slotsList}
+              </div>
+            </div>
+            <div class="doctor-dir-card-footer">
+              <a href="chatbot.html?spec=${encodeURIComponent(doc.specialization)}&doc=${encodeURIComponent(doc.name)}" class="doc-book-btn">
+                Book with Specialist
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Bind Filter Chips
+    function setupFilters(containerId, callback) {
+      const wrapper = document.getElementById(containerId);
+      wrapper.addEventListener('click', (e) => {
+        const target = e.target;
+        if (!target.classList.contains('filter-chip')) return;
+        
+        wrapper.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        target.classList.add('active');
+        
+        callback(target.dataset.value);
+      });
+    }
+
+    setupFilters('specialty-chips', (val) => {
+      currentSpecialty = val;
+      renderDoctors();
+    });
+
+    setupFilters('insurance-chips', (val) => {
+      currentInsurance = val;
+      renderDoctors();
+    });
+
+    searchInput.addEventListener('input', renderDoctors);
+
+    // Helpers
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+
+    // Load directory
+    loadDoctors();
+  </script>
+</body>
+</html>

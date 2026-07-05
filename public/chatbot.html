@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediSlot AI — Hospital Scheduling Agent</title>
+  <!-- Google Fonts: Sora, Inter, IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Prevent theme flickering
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark-theme');
+    }
+  </script>
+</head>
+<body>
+  <!-- Emergency SOS Warning Banner -->
+  <div class="sos-banner" id="sos-banner">
+    <div class="sos-content">
+      <span class="sos-icon">🚨</span>
+      <span><strong>EMERGENCY WARNING:</strong> If you are experiencing chest pain, severe shortness of breath, sudden weakness, or any other life-threatening symptoms, please call <strong>911</strong> or visit the nearest emergency room immediately. Do not attempt to schedule an appointment.</span>
+    </div>
+    <button class="sos-close-btn" onclick="document.getElementById('sos-banner').style.display='none'" title="Dismiss Alert">&times;</button>
+  </div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-title">
+        <a href="index.html" class="home-btn" title="Back to Homepage">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="home-icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </a>
+        <h1>MediSlot AI</h1>
+        <!-- Small animated pulse line in header -->
+        <div class="live-indicator">
+          <svg class="heartbeat-svg" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">
+            <path class="heartbeat-path" d="M 0,20 L 35,20 L 40,10 L 45,30 L 50,15 L 52,20 L 100,20" />
+          </svg>
+        </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle Theme" style="width: 32px; height: 32px; font-size: 0.95rem;">🌓</button>
+        <button id="history-toggle-btn" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem;">My History</button>
+        <button id="reset-btn" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem;">New Appointment</button>
+      </div>
+    </header>
+
+    <!-- Subtle EKG divider line -->
+    <div class="header-divider">
+      <svg class="divider-pulse-svg" viewBox="0 0 1000 20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M 0,10 L 400,10 L 410,2 L 420,18 L 430,6 L 435,10 L 1000,10" />
+      </svg>
+    </div>
+
+    <!-- Main Chat Workspace -->
+    <main class="chat-container">
+      <div id="chat-messages" class="chat-messages">
+        <!-- Messages will be injected here dynamically -->
+      </div>
+      
+      <!-- Thinking/Loading Indicator -->
+      <div id="thinking-indicator" class="thinking-indicator hidden">
+        <div class="thinking-text">Analyzing clinical slots</div>
+        <svg class="thinking-pulse-svg" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
+          <path class="thinking-pulse-path" d="M 0,20 L 70,20 L 75,5 L 82,35 L 89,10 L 92,20 L 200,20" />
+        </svg>
+      </div>
+    </main>
+
+    <!-- Message Input Bar -->
+    <footer class="app-footer">
+      <div id="quick-replies" class="quick-replies-container hidden"></div>
+      <form id="chat-form" class="chat-form" style="margin-top: 8px;">
+        <input type="text" id="user-input" placeholder="Type your response here..." required autocomplete="off">
+        <button type="button" id="mic-btn" class="mic-btn" title="Voice Input">🎤</button>
+        <button type="submit" class="btn btn-primary">Send</button>
+      </form>
+      <div class="footer-links">
+        <a href="admin.html" class="admin-link">Access Admin Dashboard</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Patient History Modal -->
+  <div id="history-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Patient Appointment History</h3>
+        <span id="close-history-btn" class="close-btn">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="display: flex; gap: 8px; margin-bottom: 15px;">
+          <input type="text" id="history-patient-id" placeholder="Enter Patient ID (e.g., P101)" class="form-input" style="flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background-color: var(--bg); color: var(--ink);">
+          <button id="search-history-btn" class="btn btn-primary" style="padding: 10px 16px;">Search</button>
+        </div>
+        <div id="history-results" class="history-results-container">
+          <div class="empty-state">Enter your Patient ID above to retrieve your bookings.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

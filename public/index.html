@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediSlot AI — Instant Hospital Appointment Scheduling</title>
+  <meta name="description" content="MediSlot AI is an intelligent medical appointment assistant that guides you through doctor schedules, clinical policies, and slot availability instantly.">
+  <!-- Google Fonts: Sora & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Prevent theme flickering
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark-theme');
+    }
+  </script>
+</head>
+<body class="landing-body">
+
+  <!-- Emergency SOS Warning Banner -->
+  <div class="sos-banner" id="sos-banner">
+    <div class="sos-content">
+      <span class="sos-icon">🚨</span>
+      <span><strong>EMERGENCY WARNING:</strong> If you are experiencing chest pain, severe shortness of breath, sudden weakness, or any other life-threatening symptoms, please call <strong>911</strong> or visit the nearest emergency room immediately. Do not attempt to schedule an appointment.</span>
+    </div>
+    <button class="sos-close-btn" onclick="document.getElementById('sos-banner').style.display='none'" title="Dismiss Alert">&times;</button>
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav class="landing-navbar" id="top">
+    <div class="landing-brand">
+      <div class="landing-brand-logo">M</div>
+      <span class="landing-brand-name">MediSlot AI</span>
+    </div>
+    <div class="landing-nav-links">
+      <a href="#services" class="landing-nav-link">Our Services</a>
+      <a href="doctors.html" class="landing-nav-link">Find Doctors</a>
+      <a href="login.html" class="landing-nav-link">Staff Login</a>
+      <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle Theme" style="margin-left: 10px;">🌓</button>
+      <a href="chatbot.html" class="landing-nav-btn">Launch AI Scheduler</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="landing-hero">
+    <div class="landing-hero-badge">
+      <span class="live-indicator" style="width: 24px; height: 12px; margin-right: 4px;">
+        <svg class="heartbeat-svg" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">
+          <path class="heartbeat-path" d="M 0,20 L 35,20 L 40,10 L 45,30 L 50,15 L 52,20 L 100,20" />
+        </svg>
+      </span>
+      System Active & Ingestion Verified
+    </div>
+    <h1 class="landing-hero-heading">Healthcare Scheduling, <span>Intelligently Streamlined</span></h1>
+    <p class="landing-hero-desc">
+      Skip long phone holds and manual booking forms. Speak to our interactive AI scheduling coordinator to find the perfect specialist and secure your medical slot.
+    </p>
+    <div class="landing-hero-actions">
+      <a href="chatbot.html" class="landing-btn-hero-primary">
+        Start Appointment Chat
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </a>
+      <a href="#services" class="landing-btn-hero-secondary">Explore AI Safety Features</a>
+    </div>
+  </header>
+
+  <!-- Live Waiting Times Dashboard -->
+  <section class="wait-times-section" id="wait-times">
+    <div class="wait-times-container">
+      <div class="wait-times-header">
+        <h2>Live Department Wait Times</h2>
+        <p>Estimated waiting time to consult with an active specialist (updated in real-time).</p>
+      </div>
+      <div class="wait-times-grid" id="wait-times-grid">
+        <div style="text-align: center; grid-column: 1 / -1; color: var(--muted); font-weight: 500;">
+          🔄 Loading live department statistics...
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services / Features Section -->
+  <section class="landing-section" id="services">
+    <div class="landing-section-header">
+      <h2 class="landing-section-title">The MediSlot AI Advantage</h2>
+      <p class="landing-section-subtitle">A multi-layered cognitive scheduling pipeline designed for safety, policy compliance, and real-time clinical efficiency.</p>
+    </div>
+    
+    <div class="landing-grid-3">
+      <!-- Feature 1 -->
+      <div class="landing-card-feature">
+        <div class="landing-card-icon">🛡️</div>
+        <h3 class="landing-card-heading">Security Scorer (L1)</h3>
+        <p class="landing-card-body">
+          Protects hospital patient records using real-time security scanning. Automatically identifies and isolates abnormal queries or malicious attacks.
+        </p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="landing-card-feature">
+        <div class="landing-card-icon">📅</div>
+        <h3 class="landing-card-heading">Dynamic Slot Extraction (L2)</h3>
+        <p class="landing-card-body">
+          Understands user preferences using Natural Language Processing. Confirms days, times, and patient types in a seamless conversation.
+        </p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="landing-card-feature">
+        <div class="landing-card-icon">📖</div>
+        <h3 class="landing-card-heading">RAG Policy Retrieval (L3/L4)</h3>
+        <p class="landing-card-body">
+          Cross-references requests with actual clinical policies and doctor workload availability. Offers validated, conflict-free recommendations.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Specialties Section -->
+  <section class="landing-section" style="background-color: rgba(255, 255, 255, 0.5); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);" id="specialties">
+    <div class="landing-section-header">
+      <h2 class="landing-section-title">Medical Specializations</h2>
+      <p class="landing-section-subtitle">Instantly query and book across our high-performing clinical departments.</p>
+    </div>
+
+    <div class="landing-specialties-container">
+      <!-- Specialization 1 -->
+      <div class="landing-specialty-card">
+        <span class="landing-specialty-icon">❤️</span>
+        <span class="landing-specialty-name">Cardiology</span>
+        <p class="landing-specialty-desc">Cardiac care, ECG checks, and cardiovascular wellness consults.</p>
+        <span class="landing-specialty-tag">3 Specialists Active</span>
+      </div>
+
+      <!-- Specialization 2 -->
+      <div class="landing-specialty-card">
+        <span class="landing-specialty-icon">🧪</span>
+        <span class="landing-specialty-name">Dermatology</span>
+        <p class="landing-specialty-desc">Skin consults, therapeutic checks, and pediatric derm services.</p>
+        <span class="landing-specialty-tag">2 Specialists Active</span>
+      </div>
+
+      <!-- Specialization 3 -->
+      <div class="landing-specialty-card">
+        <span class="landing-specialty-icon">🧸</span>
+        <span class="landing-specialty-name">Pediatrics</span>
+        <p class="landing-specialty-desc">Child development checks, routine exams, and neonatal support.</p>
+        <span class="landing-specialty-tag">2 Specialists Active</span>
+      </div>
+
+      <!-- Specialization 4 -->
+      <div class="landing-specialty-card">
+        <span class="landing-specialty-icon">🩺</span>
+        <span class="landing-specialty-name">General Medicine</span>
+        <p class="landing-specialty-desc">Primary physician health screening, referrals, and checkups.</p>
+        <span class="landing-specialty-tag">4 Specialists Active</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action Banner -->
+  <section class="landing-section">
+    <div class="landing-cta-banner">
+      <h2 class="landing-cta-title">Ready to Book Your Appointment?</h2>
+      <p class="landing-cta-desc">Launch our intelligent assistant now. Simply describe your health issue or preferred specialist to reserve your hospital slot in seconds.</p>
+      <a href="chatbot.html" class="landing-btn-white">
+        Open AI Chatbot
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="landing-footer-grid">
+      <div class="landing-footer-col">
+        <div class="landing-brand">
+          <div class="landing-brand-logo" style="width: 32px; height: 32px; font-size: 1rem; border-radius: 6px;">M</div>
+          <span class="landing-brand-name" style="font-size: 1.1rem;">MediSlot AI</span>
+        </div>
+        <p style="color: var(--muted); font-size: 0.85rem; line-height: 1.5; margin-top: 10px;">
+          Next-generation hospital appointment scheduling. Engineered for clinical accuracy, strict security controls, and immediate verification.
+        </p>
+      </div>
+      <div class="landing-footer-col">
+        <span class="landing-footer-title">Scheduler Platform</span>
+        <ul class="landing-footer-links">
+          <li><a href="chatbot.html" class="landing-footer-link">Open Scheduler</a></li>
+          <li><a href="login.html" class="landing-footer-link">Administrative Access</a></li>
+        </ul>
+      </div>
+      <div class="landing-footer-col">
+        <span class="landing-footer-title">Security & Policies</span>
+        <ul class="landing-footer-links">
+          <li><a href="#services" class="landing-footer-link">Security Audits</a></li>
+          <li><a href="#services" class="landing-footer-link">Ingestion Rules</a></li>
+        </ul>
+      </div>
+      <div class="landing-footer-col">
+        <span class="landing-footer-title">City General Hospital</span>
+        <p style="color: var(--muted); font-size: 0.85rem; line-height: 1.5;">
+          100 Medical Plaza Blvd,<br>
+          Suite 400<br>
+          Phone: +1 (800) 555-SLOT
+        </p>
+      </div>
+    </div>
+    <div class="landing-footer-bottom">
+      <span>© 2026 MediSlot AI / City General Hospital. All rights reserved.</span>
+      <span>Designed with a Calm Clinical Design System</span>
+    </div>
+  </footer>
+
+  <script>
+    // Theme Switch Logic
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark-theme');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
+    }
+
+    // Fetch and Render Live Wait Times
+    async function fetchWaitTimes() {
+      const grid = document.getElementById('wait-times-grid');
+      if (!grid) return;
+      
+      try {
+        const response = await fetch('/api/chat/wait-times');
+        if (!response.ok) throw new Error('Failed to fetch wait times');
+        const data = await response.json();
+        
+        if (data.length === 0) {
+          grid.innerHTML = `<div style="text-align: center; grid-column: 1 / -1; color: var(--muted);">No departments active.</div>`;
+          return;
+        }
+        
+        grid.innerHTML = data.map(item => {
+          // Icons based on department
+          let icon = '🩺';
+          if (item.specialization.toLowerCase() === 'cardiology') icon = '❤️';
+          else if (item.specialization.toLowerCase() === 'dermatology') icon = '🧪';
+          else if (item.specialization.toLowerCase() === 'pediatrics') icon = '🧸';
+          else if (item.specialization.toLowerCase() === 'neurology') icon = '🧠';
+          else if (item.specialization.toLowerCase() === 'orthopedics') icon = '🦴';
+          
+          return `
+            <div class="wait-time-card">
+              <div class="wait-card-header">
+                <span class="wait-card-title">${icon} ${item.specialization}</span>
+                <span class="status-badge ${item.statusClass}">${item.status} Wait</span>
+              </div>
+              <div class="wait-card-body">
+                <span class="wait-value">${item.waitTime}</span>
+                <span class="wait-unit">mins</span>
+              </div>
+              <div class="wait-card-footer">
+                <span>Queue: <strong>${item.queueLength}</strong> patient(s)</span>
+                <span>Doctors: <strong>${item.doctorsCount}</strong></span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('Wait times load error:', err);
+        grid.innerHTML = `<div style="text-align: center; grid-column: 1 / -1; color: var(--accent);">Failed to load live wait times. Please check connection.</div>`;
+      }
+    }
+
+    // Run on load and every 30 seconds
+    window.addEventListener('load', () => {
+      fetchWaitTimes();
+      setInterval(fetchWaitTimes, 30000);
+    });
+  </script>
+</body>
+</html>

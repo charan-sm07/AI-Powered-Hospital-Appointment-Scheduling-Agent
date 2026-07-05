@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediSlot AI — Administrative Login</title>
+  <!-- Google Fonts: Sora & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #081015;
+      --card-bg: rgba(22, 42, 53, 0.4);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --primary: #129E8E;
+      --primary-hover: #0E7F72;
+      --text-white: #FFFFFF;
+      --text-muted: #8E9EA6;
+      --error-color: #FF5A5A;
+      --success-color: #2ECC71;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* Split Screen Layout */
+    .split-container {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* Left pane (branding & pulse illustration) */
+    .left-pane {
+      flex: 1.2;
+      background: linear-gradient(135deg, #0b1a24 0%, #162e3d 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 50px;
+      position: relative;
+      overflow: hidden;
+      border-right: 1px solid var(--border-color);
+    }
+
+    /* Interactive medical glow */
+    .left-pane::before {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(18, 158, 142, 0.15) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      background-color: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: white;
+      box-shadow: 0 4px 15px rgba(18, 158, 142, 0.3);
+    }
+
+    .brand-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+
+    .brand-illustration {
+      margin: auto 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+      z-index: 2;
+    }
+
+    .badge {
+      background-color: rgba(18, 158, 142, 0.15);
+      border: 1px solid rgba(18, 158, 142, 0.3);
+      color: var(--primary);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .illustration-heading {
+      font-family: 'Sora', sans-serif;
+      font-size: 2.5rem;
+      line-height: 1.2;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+
+    .illustration-desc {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 420px;
+      line-height: 1.6;
+    }
+
+    /* Pulse graphic */
+    .pulse-svg {
+      width: 180px;
+      stroke: var(--primary);
+      stroke-width: 2.5;
+      fill: none;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: drawPulse 4s linear infinite;
+      margin-top: 10px;
+    }
+
+    @keyframes drawPulse {
+      0% { stroke-dashoffset: 1000; }
+      70% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 0; opacity: 0; }
+    }
+
+    .left-footer {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      z-index: 2;
+    }
+
+    /* Right pane (form entry) */
+    .right-pane {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      position: relative;
+    }
+
+    /* Glassmorphism Card */
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background-color: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideInUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .form-header {
+      margin-bottom: 30px;
+    }
+
+    .form-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 8px;
+    }
+
+    .form-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-white);
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-input {
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 16px 12px 42px;
+      color: var(--text-white);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(18, 158, 142, 0.25);
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+
+    .validation-error {
+      color: var(--error-color);
+      font-size: 0.78rem;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .forgot-link {
+      align-self: flex-end;
+      color: var(--primary);
+      font-size: 0.82rem;
+      text-decoration: none;
+      margin-top: -12px;
+      margin-bottom: 25px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .forgot-link:hover {
+      color: var(--text-white);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background-color: var(--primary);
+      color: var(--text-white);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(18, 158, 142, 0.2);
+    }
+
+    .submit-btn:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Accessibility focus styles */
+    .form-input:focus-visible,
+    .submit-btn:focus-visible,
+    .forgot-link:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* Success Overlay Screens */
+    .success-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      gap: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .success-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(18, 158, 142, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .check-mark {
+      font-size: 4rem;
+      color: var(--success-color);
+      transform: scale(0);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .check-mark.active {
+      transform: scale(1);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.15rem;
+      color: var(--text-white);
+      height: 24px;
+      text-align: center;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .toast {
+      background-color: #121c24;
+      border-left: 4px solid var(--error-color);
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      padding: 16px 20px;
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transform: translateX(120%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast.active {
+      transform: translateX(0);
+    }
+
+    .toast-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-white);
+    }
+
+    .toast-message {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Modal dialogs */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(8, 16, 21, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1002;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background-color: #121c24;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      max-width: 400px;
+      width: 90%;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .modal-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-white);
+    }
+
+    .modal-body {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .modal-close-btn {
+      align-self: flex-end;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .modal-close-btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 900px) {
+      .left-pane {
+        display: none;
+      }
+      .right-pane {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="split-container">
+    <!-- Left Pane -->
+    <div class="left-pane">
+      <div class="brand-header">
+        <div class="brand-logo">M</div>
+        <span class="brand-title">MediSlot AI</span>
+      </div>
+
+      <div class="brand-illustration">
+        <span class="badge">SECURE PORTAL</span>
+        <h2 class="illustration-heading">Hospital Intelligence<br>Platform</h2>
+        <p class="illustration-desc">
+          Enterprise clinical operations console. Monitor patient appointments, doctor scheduling engine performance, and security audit configurations.
+        </p>
+        <svg class="pulse-svg" viewBox="0 0 100 30">
+          <path d="M0,15 L35,15 L38,5 L42,25 L45,12 L48,18 L51,15 L100,15" />
+        </svg>
+      </div>
+
+      <div class="left-footer">
+        Powered by MediSlot AI — Version 1.0<br>
+        © 2026 MediSlot AI. All rights reserved.
+      </div>
+    </div>
+
+    <!-- Right Pane -->
+    <div class="right-pane">
+      <div class="login-card">
+        <div class="form-header">
+          <h1 class="form-title">Administrative Access</h1>
+          <p class="form-subtitle">Enter credentials to unlock dashboard console</p>
+        </div>
+
+        <form id="login-form" novalidate>
+          <div class="form-group">
+            <label for="username" class="form-label">Username</label>
+            <div class="input-wrapper">
+              <span class="input-icon">👤</span>
+              <input type="text" id="username" class="form-input" placeholder="Enter username" required autocomplete="username">
+            </div>
+            <span class="validation-error" id="username-error">Username is required</span>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔑</span>
+              <input type="password" id="password" class="form-input" placeholder="Enter password" required autocomplete="current-password">
+            </div>
+            <span class="validation-error" id="password-error">Password is required</span>
+          </div>
+
+          <a id="forgot-link" class="forgot-link">Forgot Password?</a>
+
+          <button type="submit" class="submit-btn">Unlock Console</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full screen loading/success overlay -->
+  <div class="success-overlay" id="success-overlay">
+    <div class="spinner" id="overlay-spinner"></div>
+    <div class="check-mark" id="overlay-checkmark">✓</div>
+    <div class="loader-text" id="overlay-text">Verifying Credentials...</div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Forgot Password Modal -->
+  <div class="modal-backdrop" id="forgot-modal">
+    <div class="modal-card">
+      <h3 class="modal-title">Reset Credentials</h3>
+      <p class="modal-body">Please contact the System Administrator to reset your password.</p>
+      <button class="modal-close-btn" id="modal-close-btn">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Form and Modal Elements
+    const form = document.getElementById('login-form');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const forgotLink = document.getElementById('forgot-link');
+    const forgotModal = document.getElementById('forgot-modal');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+
+    // Overlay Elements
+    const overlay = document.getElementById('success-overlay');
+    const spinner = document.getElementById('overlay-spinner');
+    const checkmark = document.getElementById('overlay-checkmark');
+    const overlayText = document.getElementById('overlay-text');
+
+    // Input validation errors
+    const usernameError = document.getElementById('username-error');
+    const passwordError = document.getElementById('password-error');
+
+    // Toast show helper
+    function showToast(title, message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `
+        <div class="toast-title">${escapeHTML(title)}</div>
+        <div class="toast-message">${escapeHTML(message)}</div>
+      `;
+      container.appendChild(toast);
+      
+      // Trigger active slide-in
+      setTimeout(() => toast.classList.add('active'), 50);
+
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        toast.classList.remove('active');
+        setTimeout(() => toast.remove(), 400);
+      }, 5000);
+    }
+
+    // Modal behavior
+    forgotLink.addEventListener('click', () => forgotModal.classList.add('active'));
+    modalCloseBtn.addEventListener('click', () => forgotModal.classList.remove('active'));
+    forgotModal.addEventListener('click', (e) => {
+      if (e.target === forgotModal) forgotModal.classList.remove('active');
+    });
+
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      let hasError = false;
+
+      // Validate inputs locally
+      if (!usernameInput.value.trim()) {
+        usernameError.style.display = 'block';
+        usernameInput.style.borderColor = 'var(--error-color)';
+        hasError = true;
+      } else {
+        usernameError.style.display = 'none';
+        usernameInput.style.borderColor = 'var(--border-color)';
+      }
+
+      if (!passwordInput.value) {
+        passwordError.style.display = 'block';
+        passwordInput.style.borderColor = 'var(--error-color)';
+        hasError = true;
+      } else {
+        passwordError.style.display = 'none';
+        passwordInput.style.borderColor = 'var(--border-color)';
+      }
+
+      if (hasError) return;
+
+      // Display animated verifying overlay
+      overlay.classList.add('active');
+      spinner.style.display = 'block';
+      checkmark.classList.remove('active');
+      checkmark.style.display = 'none';
+      overlayText.textContent = 'Verifying Credentials...';
+
+      try {
+        // Wait 500ms for premium user feedback
+        await wait(500);
+
+        overlayText.textContent = 'Creating Secure Session...';
+        
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            username: usernameInput.value,
+            password: passwordInput.value
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Success sequence
+          spinner.style.display = 'none';
+          checkmark.style.display = 'block';
+          // Trigger scale animation
+          setTimeout(() => checkmark.classList.add('active'), 50);
+          overlayText.textContent = 'Authentication Successful';
+
+          await wait(800);
+          overlayText.textContent = 'Loading Dashboard...';
+          await wait(600);
+
+          // Redirect to protected admin
+          window.location.href = '/admin.html';
+        } else {
+          // Failure sequence
+          overlay.classList.remove('active');
+          showToast('Authentication Failed', data.error || 'Invalid credentials. Please try again.');
+        }
+      } catch (err) {
+        overlay.classList.remove('active');
+        showToast('Connection Error', 'Failed to connect to the hospital security gateway. Please try again.');
+      }
+    });
+
+    // Helper utilities
+    function wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+  </script>
+</body>
+</html>
