@@ -7,6 +7,10 @@
       "destination": "https://hospital-appointment-scheduler-7l7n.onrender.com/api/:path*"
     },
     {
+      "source": "/admin",
+      "destination": "https://hospital-appointment-scheduler-7l7n.onrender.com/admin.html"
+    },
+    {
       "source": "/admin.html",
       "destination": "https://hospital-appointment-scheduler-7l7n.onrender.com/admin.html"
     },
