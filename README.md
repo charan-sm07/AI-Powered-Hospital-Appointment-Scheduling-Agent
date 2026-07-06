@@ -52,12 +52,21 @@ Create a `.env` file in the root directory (based on `.env.example`):
 
 ## 🚀 Setup & Execution
 
-### 1. Cloud Deployment (Render)
-You can deploy this project to the cloud in one click using the button below:
+### 1. Cloud Deployment
+
+#### Option A: Deploy to Render
+You can deploy this project to Render in one click using the button below:
 
 [![Deploy to Render](https://render.com/images/deploy-to-render.svg)](https://render.com/deploy?repo=https://github.com/charan-sm07/AI-Powered-Hospital-Appointment-Scheduling-Agent)
 
 *Note: You will need to provide your MongoDB Atlas Connection URI and Groq API Key (optional) during setup.*
+
+#### Option B: Deploy to Railway
+You can deploy this project to Railway in one click using the button below:
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template?template=https://github.com/charan-sm07/AI-Powered-Hospital-Appointment-Scheduling-Agent)
+
+*Note: Railway will automatically spin up the Node.js application using the root Dockerfile. You can also provision a MongoDB database directly in the same Railway project.*
 
 ### 2. Local Setup
 Ensure you have Node.js (v18+) and MongoDB installed and running locally.
