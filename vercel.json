@@ -4,11 +4,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://hospital-appointment-scheduler.onrender.com/api/:path*"
+      "destination": "https://hospital-appointment-scheduler-7l7n.onrender.com/api/:path*"
     },
     {
       "source": "/admin.html",
-      "destination": "https://hospital-appointment-scheduler.onrender.com/admin.html"
+      "destination": "https://hospital-appointment-scheduler-7l7n.onrender.com/admin.html"
     },
     {
       "source": "/(.*)",
