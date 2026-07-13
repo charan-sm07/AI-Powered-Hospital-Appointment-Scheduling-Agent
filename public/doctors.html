@@ -181,7 +181,7 @@
         const slotsList = (doc.availableSlots || [])
           .filter(slot => !slot.isBooked)
           .slice(0, 3)
-          .map(slot => `<span class="available-slot-chip">${slot.day} ${slot.startTime}</span>`)
+          .map(slot => `<a href="chatbot.html?spec=${encodeURIComponent(doc.specialization)}&doc=${encodeURIComponent(doc.name)}&day=${encodeURIComponent(slot.day)}&time=${encodeURIComponent(slot.startTime)}" class="available-slot-chip" style="text-decoration: none;">${slot.day} ${slot.startTime}</a>`)
           .join('') || '<span class="available-slot-chip none">Fully Booked</span>';
 
         return `

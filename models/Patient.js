@@ -8,6 +8,7 @@ const visitHistorySchema = new mongoose.Schema({
 const patientSchema = new mongoose.Schema({
   patientId: { type: String, required: true, unique: true },
   name: { type: String, required: true },
+  phoneNumber: { type: String },
   isExisting: { type: Boolean, default: false },
   insurancePlan: { type: String }, // e.g., 'MediCare', 'ShieldCross', 'None'
   visitHistory: [visitHistorySchema]

@@ -7,6 +7,8 @@ const appointmentRequestSchema = new mongoose.Schema({
   preferredTime: { type: String },
   timeframe: { type: String },
   isExistingPatient: { type: Boolean },
+  patientName: { type: String },
+  patientPhone: { type: String },
   verdict: { type: String, enum: ['confirmed', 'alternative_suggested', 'waitlisted', 'flagged'] },
   assignedDoctor: { type: String, default: null },
   confirmedSlot: {

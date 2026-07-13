@@ -1786,5 +1786,473 @@ html.dark-theme .mic-btn {
   color: #ffcccc !important;
 }
 
+/* --- Interactive Slot Picker UI --- */
+.slot-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+  width: 100%;
+}
 
+.slot-picker-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+}
 
+.slot-picker-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-1.5px);
+  box-shadow: var(--shadow-md);
+  background-color: var(--primary-soft);
+}
+
+html.dark-theme .slot-picker-card:hover {
+  background-color: #123d37;
+}
+
+.slot-card-doctor {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--primary);
+}
+
+.slot-card-time {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.slot-card-day {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Cancel Appointment Button in History Modal */
+.btn-danger-soft {
+  background-color: #ffebe6;
+  color: #d32f2f;
+  border: 1px solid #ffd9cc;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-danger-soft:hover {
+  background-color: #d32f2f;
+  color: #ffffff;
+  border-color: transparent;
+}
+
+html.dark-theme .btn-danger-soft {
+  background-color: #2c1616;
+  color: #ff6666;
+  border-color: #4d2323;
+}
+
+html.dark-theme .btn-danger-soft:hover {
+  background-color: #d32f2f;
+  color: #ffffff;
+  border-color: transparent;
+}
+
+/* Status badging inside history results */
+.status-pill {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.status-pill-completed {
+  background-color: var(--primary-soft);
+  color: var(--primary);
+}
+
+.status-pill-cancelled {
+  background-color: #ffebe6;
+  color: #d32f2f;
+}
+
+.status-pill-pending {
+  background-color: #fff8e6;
+  color: #b38600;
+}
+
+/* --- Ambient Aurora Glow Backgrounds --- */
+.aurora-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.15;
+  mix-blend-mode: multiply;
+  animation: floatAurora 25s infinite alternate ease-in-out;
+  pointer-events: none;
+}
+
+html.dark-theme .aurora-blob {
+  opacity: 0.08;
+  mix-blend-mode: screen;
+}
+
+.aurora-blob-1 {
+  width: 500px;
+  height: 500px;
+  background-color: var(--primary);
+  top: -10%;
+  left: -10%;
+  animation-duration: 20s;
+}
+
+.aurora-blob-2 {
+  width: 600px;
+  height: 600px;
+  background-color: #E8734B; /* secondary accent */
+  bottom: -15%;
+  right: -10%;
+  animation-duration: 28s;
+  animation-delay: -5s;
+}
+
+.aurora-blob-3 {
+  width: 400px;
+  height: 400px;
+  background-color: #0d8a72;
+  top: 40%;
+  left: 50%;
+  animation-duration: 24s;
+  animation-delay: -10s;
+}
+
+@keyframes floatAurora {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translate(80px, 40px) scale(1.1) rotate(180deg);
+  }
+  100% {
+    transform: translate(-40px, -60px) scale(0.9) rotate(360deg);
+  }
+}
+
+/* --- Glassmorphism Enhancements --- */
+.app-container {
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 20px 50px rgba(14, 110, 99, 0.08) !important;
+}
+
+html.dark-theme .app-container {
+  background: rgba(20, 27, 34, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3) !important;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+html.dark-theme .modal-content {
+  background: rgba(20, 27, 34, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* --- Chat Entry Animation --- */
+.message {
+  animation: bubbleSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateY(12px);
+  will-change: transform, opacity;
+}
+
+@keyframes bubbleSlideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Premium Input Focus & Glows --- */
+.chat-form input[type="text"]:focus,
+.form-input:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 4px rgba(14, 110, 99, 0.15) !important;
+  background-color: var(--surface) !important;
+}
+
+html.dark-theme .chat-form input[type="text"]:focus,
+html.dark-theme .form-input:focus {
+  box-shadow: 0 0 0 4px rgba(14, 110, 99, 0.25) !important;
+}
+
+/* --- EKG thinking animation fine-tune --- */
+.thinking-pulse-path {
+  stroke: var(--primary);
+  stroke-width: 2.5;
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: runPulse 2s infinite linear;
+}
+
+@keyframes runPulse {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* --- Smart Notifications Toast UI --- */
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.toast-notification {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 320px;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(14, 110, 99, 0.2);
+  border-left: 5px solid var(--primary);
+  border-radius: 8px;
+  padding: 14px 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  animation: toastSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+html.dark-theme .toast-notification {
+  background: rgba(20, 27, 34, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 5px solid var(--primary);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.toast-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  flex-grow: 1;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.toast-close:hover {
+  color: var(--accent);
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* --- Security & Emergency Flagged Cards --- */
+.security-card {
+  margin: 16px 0;
+  border-radius: 12px;
+  padding: 18px;
+  animation: messageEntry 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+}
+
+.security-emergency {
+  background: rgba(255, 245, 245, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(220, 53, 69, 0.4);
+  border-left: 6px solid #dc3545;
+  color: #842029;
+}
+
+html.dark-theme .security-emergency {
+  background: rgba(44, 18, 21, 0.85);
+  border-color: rgba(220, 53, 69, 0.3);
+  color: #ea868f;
+}
+
+.security-threat {
+  background: rgba(255, 248, 242, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(232, 115, 75, 0.4);
+  border-left: 6px solid var(--accent);
+  color: #664d03;
+}
+
+html.dark-theme .security-threat {
+  background: rgba(33, 27, 18, 0.85);
+  border-color: rgba(232, 115, 75, 0.3);
+  color: #ffda6a;
+}
+
+.security-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.security-text {
+  font-size: 0.88rem;
+  margin-bottom: 14px;
+}
+
+.security-action {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.emergency-call-btn, .emergency-maps-btn {
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.emergency-call-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.emergency-call-btn:hover {
+  background-color: #bb2d3b;
+  transform: translateY(-1px);
+}
+
+.emergency-maps-btn {
+  background-color: transparent;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+html.dark-theme .emergency-maps-btn {
+  color: #ea868f;
+  border-color: #ea868f;
+}
+
+.emergency-maps-btn:hover {
+  background-color: rgba(220, 53, 69, 0.08);
+  transform: translateY(-1px);
+}
+
+.security-action-threat {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  border-top: 1px dashed rgba(232, 115, 75, 0.2);
+  padding-top: 8px;
+}
+
+/* Patient details validation warning card styling */
+.validation-warning {
+  background: rgba(255, 249, 219, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(247, 181, 0, 0.4);
+  border-left: 6px solid #f7b500;
+  color: #664d03;
+}
+
+html.dark-theme .validation-warning {
+  background: rgba(36, 32, 15, 0.85);
+  border-color: rgba(247, 181, 0, 0.3);
+  color: #ffe69c;
+}
+
+.validation-warning .security-title {
+  color: #b38600 !important;
+}
+
+html.dark-theme .validation-warning .security-title {
+  color: #ffe69c !important;
+}
+
+.validation-warning .security-text {
+  color: #664d03 !important;
+}
+
+html.dark-theme .validation-warning .security-text {
+  color: #fcf8e3 !important;
+}

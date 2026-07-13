@@ -104,7 +104,8 @@ const seedDatabase = async () => {
     const patients = [
       {
         patientId: 'P101',
-        name: 'John Doe',
+        name: 'John Miller',
+        phoneNumber: '9876543211',
         isExisting: true,
         insurancePlan: 'MediCare',
         visitHistory: [
@@ -114,6 +115,7 @@ const seedDatabase = async () => {
       {
         patientId: 'P102',
         name: 'Jane Smith',
+        phoneNumber: '9876543212',
         isExisting: true,
         insurancePlan: 'ShieldCross',
         visitHistory: [
@@ -123,6 +125,7 @@ const seedDatabase = async () => {
       {
         patientId: 'P103',
         name: 'Bob Johnson',
+        phoneNumber: '9876543213',
         isExisting: false,
         insurancePlan: 'CareFirst',
         visitHistory: []
@@ -130,6 +133,7 @@ const seedDatabase = async () => {
       {
         patientId: 'P104',
         name: 'Alice Williams',
+        phoneNumber: '9876543214',
         isExisting: true,
         insurancePlan: 'None',
         visitHistory: [
@@ -139,6 +143,7 @@ const seedDatabase = async () => {
       {
         patientId: 'P105',
         name: 'Charlie Brown',
+        phoneNumber: '9876543215',
         isExisting: false,
         insurancePlan: 'ShieldCross',
         visitHistory: []

@@ -22,7 +22,7 @@ async function startSession() {
     
     // Render first bot question
     appendBotMessage(data.message);
-    renderSuggestionChips(data.currentState);
+    renderSuggestionChips(data.currentState, data.availableSlots);
     
     // Auto-submit URL parameters if present
     checkQueryParamsAndAutoSubmit();
@@ -42,10 +42,15 @@ async function handleSendMessage(event) {
   event.preventDefault();
   const text = userInputField.value.trim();
   if (!text || !sessionId) return;
+  userInputField.value = '';
+  await sendMessage(text);
+}
+
+async function sendMessage(text, slotOverrides = null) {
+  if (!sessionId) return;
 
   // Append user message
   appendUserMessage(text);
-  userInputField.value = '';
 
   // Show thinking pulse line
   showThinking(true);
@@ -54,7 +59,7 @@ async function handleSendMessage(event) {
     const response = await fetch('/api/chat/message', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId, text })
+      body: JSON.stringify({ sessionId, text, slotOverrides })
     });
     
     const data = await response.json();
@@ -69,8 +74,12 @@ async function handleSendMessage(event) {
       renderSuggestionChips(null);
     } else {
       // Standard slot gathering question
-      appendBotMessage(data.message);
-      renderSuggestionChips(data.currentState);
+      if (data.validationFailed) {
+        appendValidationWarningCard(data.message);
+      } else {
+        appendBotMessage(data.message);
+      }
+      renderSuggestionChips(data.currentState, data.availableSlots);
     }
   } catch (error) {
     console.error('Error sending message:', error);
@@ -79,6 +88,24 @@ async function handleSendMessage(event) {
   } finally {
     showThinking(false);
   }
+}
+
+/**
+ * Appends a warning card when validation of name/phone fails.
+ */
+function appendValidationWarningCard(text) {
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const card = document.createElement('div');
+  card.className = 'security-card validation-warning';
+  
+  const formatted = escapeHTML(text).replace(/\n/g, '<br>');
+  card.innerHTML = `
+    <div class="security-title">⚠️ Patient Verification Alert</div>
+    <div class="security-text">${formatted}</div>
+    <span class="message-time" style="color: var(--warning-dark, #d9480f); font-size: 0.75rem; margin-top: 8px; display: block;">${time}</span>
+  `;
+  messagesContainer.appendChild(card);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 /**
@@ -143,11 +170,28 @@ function appendSystemMessage(text) {
  */
 function appendSecurityEventCard(text) {
   const card = document.createElement('div');
-  card.className = 'security-card';
-  card.innerHTML = `
-    <div class="security-title">⚠️ Security Threat Flagged</div>
-    <div class="security-text">${escapeHTML(text)}</div>
-  `;
+  const isEmergency = text.includes('Emergency') || text.includes('அவசரநிலை') || text.includes('आपातकालीन');
+  
+  if (isEmergency) {
+    card.className = 'security-card security-emergency';
+    card.innerHTML = `
+      <div class="security-title">🚨 MEDICAL EMERGENCY DETECTED</div>
+      <div class="security-text">${escapeHTML(text).replace(/\n/g, '<br>')}</div>
+      <div class="security-action">
+        <a href="tel:911" class="emergency-call-btn">📞 Call Emergency (911)</a>
+        <a href="https://www.google.com/maps/search/emergency+room+near+me" target="_blank" class="emergency-maps-btn">📍 Find Nearest ER</a>
+      </div>
+    `;
+  } else {
+    card.className = 'security-card security-threat';
+    card.innerHTML = `
+      <div class="security-title">⚠️ ACCESS SECURITY QUARANTINE</div>
+      <div class="security-text">${escapeHTML(text)}</div>
+      <div class="security-action-threat">
+        This session has been blocked due to suspicious activity scoring. Please restart your session if this was an error.
+      </div>
+    `;
+  }
   messagesContainer.appendChild(card);
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
@@ -268,6 +312,11 @@ function appendDecisionCard(decision) {
   const printBtn = card.querySelector('.download-pdf-btn');
   if (printBtn) {
     printBtn.addEventListener('click', () => downloadPDF(decision));
+  }
+
+  // Trigger simulated smart notifications if confirmed
+  if (verdict === 'confirmed') {
+    triggerSmartNotifications(decision);
   }
 }
 
@@ -391,6 +440,56 @@ function downloadPDF(decision) {
 }
 
 /**
+ * Triggers simulated smart notifications upon booking confirmation.
+ */
+function triggerSmartNotifications(decision) {
+  const appId = decision.appointmentId || 'N/A';
+  const notifications = [
+    { type: 'email', icon: '📧', text: `Email confirmation sent for Ticket #${appId}` },
+    { type: 'sms', icon: '💬', text: `SMS Alert sent to patient's mobile device` },
+    { type: 'whatsapp', icon: '🟢', text: `WhatsApp status receipt delivered` }
+  ];
+
+  notifications.forEach((notif, index) => {
+    setTimeout(() => {
+      showToastNotification(notif.icon, notif.text);
+    }, (index + 1) * 1200);
+  });
+}
+
+/**
+ * Creates and displays a beautiful, dynamic, sliding glassmorphic toast notification.
+ */
+function showToastNotification(icon, message) {
+  // Ensure a toast container exists in the body
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = 'toast-notification';
+  toast.innerHTML = `
+    <span class="toast-icon">${icon}</span>
+    <span class="toast-message">${escapeHTML(message)}</span>
+    <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+  `;
+
+  container.appendChild(toast);
+
+  // Auto-remove toast after 4.5 seconds
+  setTimeout(() => {
+    toast.style.animation = 'toastSlideOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+    setTimeout(() => {
+      toast.remove();
+    }, 400);
+  }, 4500);
+}
+
+/**
  * Escapes HTML characters to prevent XSS.
  */
 function escapeHTML(str) {
@@ -453,12 +552,53 @@ if (micBtn) {
 
 const quickRepliesContainer = document.getElementById('quick-replies');
 
-function renderSuggestionChips(state) {
+function renderSuggestionChips(state, availableSlots = []) {
   if (!quickRepliesContainer) return;
   quickRepliesContainer.innerHTML = '';
   
   if (!state || state === 'DONE' || state === 'FROZEN' || state === 'DECIDING') {
     quickRepliesContainer.classList.add('hidden');
+    return;
+  }
+
+  // Visual Interactive Slot Picker Grid
+  if ((state === 'COLLECTING_TIME' || state === 'COLLECTING_TIMEFRAME') && availableSlots && availableSlots.length > 0) {
+    const gridDiv = document.createElement('div');
+    gridDiv.className = 'slot-picker-grid';
+
+    const gridHeader = document.createElement('div');
+    gridHeader.style.width = '100%';
+    gridHeader.style.fontSize = '0.8rem';
+    gridHeader.style.fontWeight = '600';
+    gridHeader.style.color = 'var(--muted)';
+    gridHeader.style.marginBottom = '4px';
+    gridHeader.style.textAlign = 'left';
+    gridHeader.innerText = 'Or select an available time directly:';
+    gridDiv.appendChild(gridHeader);
+
+    availableSlots.forEach(slot => {
+      const card = document.createElement('div');
+      card.className = 'slot-picker-card';
+      card.innerHTML = `
+        <span class="slot-card-doctor">${escapeHTML(slot.doctorName)}</span>
+        <span class="slot-card-time">⏰ ${slot.day} - ${slot.startTime}</span>
+        <span class="slot-card-day">${escapeHTML(slot.specialization)}</span>
+      `;
+      card.addEventListener('click', () => {
+        const descMsg = `Booked ${slot.day} at ${slot.startTime} with ${slot.doctorName}`;
+        const overrides = {
+          specialization: slot.specialization,
+          timeframe: slot.day,
+          preferredTime: slot.startTime
+        };
+        quickRepliesContainer.classList.add('hidden');
+        sendMessage(descMsg, overrides);
+      });
+      gridDiv.appendChild(card);
+    });
+
+    quickRepliesContainer.appendChild(gridDiv);
+    quickRepliesContainer.classList.remove('hidden');
     return;
   }
 
@@ -591,7 +731,7 @@ function initPatientHistory() {
 
       resultsContainer.innerHTML = data.map((app, index) => {
         const dateStr = new Date(app.timestamp).toLocaleString();
-        const hasTicket = app.verdict === 'confirmed' && app.confirmedSlot;
+        const hasTicket = app.verdict === 'confirmed' && app.confirmedSlot && app.status !== 'cancelled';
         const ticketBtn = hasTicket 
           ? `<button type="button" class="btn download-ticket-btn" data-index="${index}" style="padding: 6px 12px; font-size: 0.78rem; border-radius: 6px; cursor: pointer;">Download PDF</button>`
           : '';
@@ -599,6 +739,25 @@ function initPatientHistory() {
         const slotInfo = app.confirmedSlot 
           ? `${app.confirmedSlot.day} ${app.confirmedSlot.time}` 
           : (app.preferredTime || 'N/A');
+
+        const isConfirmed = app.verdict === 'confirmed' && app.status !== 'cancelled';
+        const cancelBtn = isConfirmed
+          ? `<button type="button" class="btn-danger-soft cancel-appointment-btn" data-id="${app._id.toString().substring(18).toUpperCase()}" data-patient="${escapeHTML(patientId)}">Cancel Appointment</button>`
+          : '';
+
+        const appStatus = app.status || 'pending';
+        let statusClass = 'status-pill-pending';
+        let statusText = appStatus;
+        
+        if (appStatus === 'completed') {
+          statusClass = 'status-pill-completed';
+          statusText = app.verdict || 'confirmed';
+        } else if (appStatus === 'cancelled') {
+          statusClass = 'status-pill-cancelled';
+          statusText = 'cancelled';
+        }
+        
+        const statusBadgeHtml = `<span class="status-pill ${statusClass}">${escapeHTML(statusText)}</span>`;
 
         return `
           <div class="history-card">
@@ -609,10 +768,13 @@ function initPatientHistory() {
             <div class="history-card-body">
               <div>Specialization: <strong style="color: var(--ink);">${escapeHTML(app.specializationRequested)}</strong></div>
               <div>Time/Slot: <strong>${escapeHTML(slotInfo)}</strong></div>
-              <div>Verdict: <span class="badge badge-${app.verdict === 'confirmed' ? 'green' : app.verdict === 'waitlisted' ? 'orange' : 'red'}" style="font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; background-color: ${app.verdict === 'confirmed' ? 'var(--primary-soft)' : '#fff5f2'}; color: ${app.verdict === 'confirmed' ? 'var(--primary)' : 'var(--accent)'};">${escapeHTML(app.verdict)}</span></div>
+              <div>Status: ${statusBadgeHtml}</div>
               <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">Notes: ${escapeHTML(app.reasoning)}</div>
             </div>
-            ${hasTicket ? `<div class="history-card-footer">${ticketBtn}</div>` : ''}
+            <div class="history-card-footer" style="display: flex; gap: 8px; justify-content: flex-end;">
+              ${ticketBtn}
+              ${cancelBtn}
+            </div>
           </div>
         `;
       }).join('');
@@ -634,6 +796,37 @@ function initPatientHistory() {
         });
       });
 
+      // Bind cancel event listeners
+      const cancelButtons = resultsContainer.querySelectorAll('.cancel-appointment-btn');
+      cancelButtons.forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const appVal = btn.dataset.id;
+          const patVal = btn.dataset.patient;
+          
+          if (confirm(`Are you sure you want to cancel appointment #${appVal}?`)) {
+            try {
+              const cancelRes = await fetch('/api/chat/cancel', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ appointmentId: appVal, patientId: patVal })
+              });
+              
+              const cancelData = await cancelRes.json();
+              if (cancelRes.ok) {
+                alert(cancelData.message || 'Appointment cancelled successfully.');
+                // Re-trigger search to update UI
+                searchBtn.click();
+              } else {
+                alert(cancelData.error || 'Failed to cancel appointment.');
+              }
+            } catch (err) {
+              console.error('Cancellation error:', err);
+              alert('Failed to connect to server for cancellation.');
+            }
+          }
+        });
+      });
+
     } catch (err) {
       console.error(err);
       resultsContainer.innerHTML = `<div class="empty-state" style="color: var(--accent);">Failed to load history. Please try again.</div>`;
@@ -652,11 +845,25 @@ function initPatientHistory() {
 function checkQueryParamsAndAutoSubmit() {
   const params = new URLSearchParams(window.location.search);
   const spec = params.get('spec');
+  const doc = params.get('doc');
+  const day = params.get('day');
+  const time = params.get('time');
   
   if (spec) {
     setTimeout(() => {
-      userInputField.value = spec;
-      chatForm.dispatchEvent(new Event('submit'));
+      if (doc && day && time) {
+        // Direct E2E booking override shortcut
+        const messageText = `Booking ${spec} on ${day} at ${time} with ${doc}`;
+        const slotOverrides = {
+          specialization: spec,
+          timeframe: day,
+          preferredTime: time
+        };
+        sendMessage(messageText, slotOverrides);
+      } else {
+        userInputField.value = spec;
+        chatForm.dispatchEvent(new Event('submit'));
+      }
     }, 600);
   }
 }
