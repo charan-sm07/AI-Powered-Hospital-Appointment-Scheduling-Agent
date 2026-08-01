@@ -870,4 +870,63 @@ router.post('/cancel', async (req, res) => {
   }
 });
 
+/**
+ * GET /api/chat/pre-intake/:appointmentId
+ * Pre-Appointment Intake & Clinical Preparation Checklist Generator
+ */
+router.get('/pre-intake/:appointmentId', async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const requests = await AppointmentRequest.find();
+    const app = requests.find(
+      r => r._id.toString().substring(18).toUpperCase() === appointmentId.toUpperCase()
+    );
+
+    if (!app) {
+      return res.status(404).json({ error: 'Appointment not found.' });
+    }
+
+    const dept = (app.specializationRequested || 'General Medicine').toLowerCase();
+    
+    // Custom prep guidelines based on department
+    let prepChecklist = [
+      'Bring a valid Photo ID and Insurance Card (if applicable).',
+      'Bring a list of all current prescription and over-the-counter medications.',
+      'Arrive 15 minutes prior to your scheduled time slot.'
+    ];
+
+    if (dept.includes('cardio')) {
+      prepChecklist.push('Bring previous ECG, Echocardiogram reports, or blood pressure logs if available.');
+      prepChecklist.push('Avoid caffeinated beverages 2 hours prior to consultation.');
+      prepChecklist.push('Fast for 8-10 hours if fasting lipid profile or blood glucose tests are scheduled.');
+    } else if (dept.includes('derm')) {
+      prepChecklist.push('Avoid applying heavy makeup, lotions, or creams on the skin area to be inspected.');
+      prepChecklist.push('Note down when skin symptoms first appeared and any triggers.');
+    } else if (dept.includes('pedia')) {
+      prepChecklist.push("Bring the child's immunization / vaccination history card.");
+      prepChecklist.push('Note down symptoms, fever logs, and child weight if recorded.');
+    } else if (dept.includes('ortho')) {
+      prepChecklist.push('Bring previous X-rays, MRI scans, or orthopedic consultation notes.');
+      prepChecklist.push('Wear loose, comfortable clothing for physical mobility assessment.');
+    } else {
+      prepChecklist.push('List all primary symptoms and when they started.');
+    }
+
+    res.status(200).json({
+      success: true,
+      appointmentId,
+      patientId: app.patientId,
+      specialization: app.specializationRequested,
+      doctor: app.assignedDoctor || 'Assigned Specialist',
+      slot: app.confirmedSlot,
+      prepChecklist,
+      hospitalLocation: 'City General Hospital — 100 Medical Plaza Blvd, Suite 400',
+      contactPhone: '+1 (800) 555-SLOT'
+    });
+  } catch (err) {
+    console.error('[Chat API] Pre-intake error:', err);
+    res.status(500).json({ error: 'Failed to retrieve pre-appointment intake guide.' });
+  }
+});
+
 export default router;

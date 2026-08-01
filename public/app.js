@@ -304,6 +304,7 @@ function appendDecisionCard(decision) {
       <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
         <button type="button" class="btn download-pdf-btn">Print Pass / PDF</button>
         <button type="button" class="btn download-ics-btn" style="background-color: var(--surface-card); color: var(--ink); border: 1px solid var(--border);">📅 Add to Calendar (.ics)</button>
+        <button type="button" class="btn prep-checklist-btn" style="background-color: var(--surface-card); color: var(--primary); border: 1px solid var(--border);">📋 Prep Checklist</button>
       </div>
     </div>
   `;
@@ -323,10 +324,70 @@ function appendDecisionCard(decision) {
     icsBtn.addEventListener('click', () => downloadICS(decision));
   }
 
+  // Bind prep checklist listener
+  const prepBtn = card.querySelector('.prep-checklist-btn');
+  if (prepBtn) {
+    prepBtn.addEventListener('click', () => showIntakeModal(appId));
+  }
+
   // Trigger simulated smart notifications if confirmed
   if (verdict === 'confirmed') {
     triggerSmartNotifications(decision);
   }
+}
+
+/**
+ * Fetches and displays the clinical pre-appointment preparation guide.
+ */
+async function showIntakeModal(appointmentId) {
+  const modal = document.getElementById('intake-modal');
+  const modalBody = document.getElementById('intake-modal-body');
+  const closeBtn = document.getElementById('close-intake-btn');
+
+  if (!modal || !modalBody) return;
+
+  modal.classList.add('active');
+  modalBody.innerHTML = `<div class="empty-state">Loading clinical intake guide for #${appointmentId}...</div>`;
+
+  try {
+    const res = await fetch(`/api/chat/pre-intake/${encodeURIComponent(appointmentId)}`);
+    if (!res.ok) throw new Error('Failed to fetch guide');
+    const data = await res.json();
+
+    const itemsHtml = (data.prepChecklist || [])
+      .map(item => `
+        <li style="margin-bottom: 10px; font-size: 0.88rem; display: flex; align-items: flex-start; gap: 8px;">
+          <input type="checkbox" style="margin-top: 3px; accent-color: var(--primary); transform: scale(1.1);">
+          <span>${escapeHTML(item)}</span>
+        </li>
+      `).join('');
+
+    modalBody.innerHTML = `
+      <div style="background: var(--bg); padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; border: 1px solid var(--border);">
+        <div>Department: <strong style="color: var(--ink);">${escapeHTML(data.specialization)}</strong></div>
+        <div>Assigned Specialist: <strong>${escapeHTML(data.doctor)}</strong></div>
+        <div>Location: <strong>${escapeHTML(data.hospitalLocation)}</strong></div>
+      </div>
+      <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 12px; color: var(--primary);">Clinical Preparation Checklist:</div>
+      <ul style="list-style: none; padding: 0; margin-bottom: 20px;">
+        ${itemsHtml}
+      </ul>
+      <div style="display: flex; justify-content: flex-end;">
+        <button type="button" class="btn btn-primary" onclick="window.print()" style="padding: 8px 16px; font-size: 0.85rem;">🖨️ Print Preparation Checklist</button>
+      </div>
+    `;
+  } catch (err) {
+    console.error('Intake load error:', err);
+    modalBody.innerHTML = `<div class="empty-state" style="color: var(--accent);">Failed to load intake checklist. Please ensure appointment ID is valid.</div>`;
+  }
+
+  if (closeBtn) {
+    closeBtn.onclick = () => modal.classList.remove('active');
+  }
+
+  modal.onclick = (e) => {
+    if (e.target === modal) modal.classList.remove('active');
+  };
 }
 
 /**
@@ -790,6 +851,9 @@ function initPatientHistory() {
         const cancelBtn = isConfirmed
           ? `<button type="button" class="btn-danger-soft cancel-appointment-btn" data-id="${app._id.toString().substring(18).toUpperCase()}" data-patient="${escapeHTML(patientId)}">Cancel Appointment</button>`
           : '';
+        const intakeBtn = isConfirmed
+          ? `<button type="button" class="btn history-prep-btn" data-id="${app._id.toString().substring(18).toUpperCase()}" style="padding: 6px 12px; font-size: 0.78rem; border-radius: 6px; cursor: pointer; background-color: var(--surface-card); color: var(--primary); border: 1px solid var(--border);">📋 Prep Guide</button>`
+          : '';
 
         const appStatus = app.status || 'pending';
         let statusClass = 'status-pill-pending';
@@ -817,13 +881,22 @@ function initPatientHistory() {
               <div>Status: ${statusBadgeHtml}</div>
               <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">Notes: ${escapeHTML(app.reasoning)}</div>
             </div>
-            <div class="history-card-footer" style="display: flex; gap: 8px; justify-content: flex-end;">
+            <div class="history-card-footer" style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
+              ${intakeBtn}
               ${ticketBtn}
               ${cancelBtn}
             </div>
           </div>
         `;
       }).join('');
+
+      // Bind prep guide buttons
+      const prepButtons = resultsContainer.querySelectorAll('.history-prep-btn');
+      prepButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          showIntakeModal(btn.dataset.id);
+        });
+      });
 
       // Bind print events to tickets
       const ticketButtons = resultsContainer.querySelectorAll('.download-ticket-btn');
