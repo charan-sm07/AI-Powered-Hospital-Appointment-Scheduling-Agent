@@ -50,6 +50,7 @@
         </div>
       <div style="display: flex; align-items: center; gap: 8px;">
         <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle Theme" style="width: 32px; height: 32px; font-size: 0.95rem;">🌓</button>
+        <button id="doctors-toggle-btn" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem;">🩺 Doctor Schedules</button>
         <button id="history-toggle-btn" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem;">My History</button>
         <button id="reset-btn" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem;">New Appointment</button>
       </div>
@@ -105,6 +106,21 @@
         </div>
         <div id="history-results" class="history-results-container">
           <div class="empty-state">Enter your Patient ID above to retrieve your bookings.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Doctor Schedules Modal -->
+  <div id="doctors-modal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+      <div class="modal-header">
+        <h3>🩺 Active Doctor Schedules & Available Slots</h3>
+        <span id="close-doctors-btn" class="close-btn">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div id="doctors-results" class="doctors-results-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; max-height: 500px; overflow-y: auto;">
+          <div class="empty-state">Loading active doctor schedules...</div>
         </div>
       </div>
     </div>

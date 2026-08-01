@@ -301,7 +301,10 @@ function appendDecisionCard(decision) {
         ${refPills}
       </div>
 
-      <button type="button" class="btn download-pdf-btn">Download PDF Ticket</button>
+      <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+        <button type="button" class="btn download-pdf-btn">Print Pass / PDF</button>
+        <button type="button" class="btn download-ics-btn" style="background-color: var(--surface-card); color: var(--ink); border: 1px solid var(--border);">📅 Add to Calendar (.ics)</button>
+      </div>
     </div>
   `;
 
@@ -314,10 +317,53 @@ function appendDecisionCard(decision) {
     printBtn.addEventListener('click', () => downloadPDF(decision));
   }
 
+  // Bind .ics calendar download listener
+  const icsBtn = card.querySelector('.download-ics-btn');
+  if (icsBtn) {
+    icsBtn.addEventListener('click', () => downloadICS(decision));
+  }
+
   // Trigger simulated smart notifications if confirmed
   if (verdict === 'confirmed') {
     triggerSmartNotifications(decision);
   }
+}
+
+/**
+ * Generates and downloads an iCal (.ics) calendar file for the appointment.
+ */
+function downloadICS(decision) {
+  const docName = decision.assignedDoctor || 'Specialist';
+  const dayStr = decision.confirmedSlot ? decision.confirmedSlot.day : 'Scheduled Day';
+  const timeStr = decision.confirmedSlot ? decision.confirmedSlot.time : '09:00 AM';
+  const appId = decision.appointmentId || 'MEDISLOT';
+
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//MediSlot AI//Hospital Appointment Scheduler//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `SUMMARY:Medical Appointment with ${docName} (${dayStr})`,
+    `DESCRIPTION:Confirmed appointment ticket #${appId} with ${docName}. Estimated wait time: ${decision.estimatedWaitingTime || 10} minutes. Notes: ${decision.reasoning || 'MediSlot AI Verified'}`,
+    'LOCATION:City General Hospital, 100 Medical Plaza Blvd',
+    'STATUS:CONFIRMED',
+    `UID:medislot-${appId}-${Date.now()}@hospital.org`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', `appointment_${appId}.ics`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  showToastNotification('📅', 'Appointment added to calendar (.ics exported)!');
 }
 
 /**
@@ -857,19 +903,114 @@ function checkQueryParamsAndAutoSubmit() {
         const slotOverrides = {
           specialization: spec,
           timeframe: day,
-          preferredTime: time
+          preferredTime: time,
+          preferredDoctor: doc
         };
         sendMessage(messageText, slotOverrides);
       } else {
-        userInputField.value = spec;
-        chatForm.dispatchEvent(new Event('submit'));
+        const messageText = doc ? `I want to book ${spec} with ${doc}` : spec;
+        const slotOverrides = {
+          specialization: spec
+        };
+        if (doc) {
+          slotOverrides.preferredDoctor = doc;
+        }
+        sendMessage(messageText, slotOverrides);
       }
     }, 600);
   }
+}
+
+/**
+ * Doctor Schedules & Slots Modal Handler
+ */
+function initDoctorSchedulesModal() {
+  const modal = document.getElementById('doctors-modal');
+  const toggleBtn = document.getElementById('doctors-toggle-btn');
+  const closeBtn = document.getElementById('close-doctors-btn');
+  const resultsContainer = document.getElementById('doctors-results');
+
+  if (!modal || !toggleBtn || !closeBtn || !resultsContainer) return;
+
+  async function loadDoctors() {
+    resultsContainer.innerHTML = `<div class="empty-state">Loading active doctor schedules...</div>`;
+    try {
+      const response = await fetch('/api/chat/doctors');
+      if (!response.ok) throw new Error('Failed to load doctors');
+      const doctors = await response.json();
+
+      if (doctors.length === 0) {
+        resultsContainer.innerHTML = `<div class="empty-state">No doctors currently registered.</div>`;
+        return;
+      }
+
+      resultsContainer.innerHTML = doctors.map(doc => {
+        const availableSlots = (doc.availableSlots || []).filter(s => !s.isBooked);
+        const slotsHtml = availableSlots.length > 0
+          ? availableSlots.map(s => `
+              <span class="slot-badge-btn" data-doc="${escapeHTML(doc.name)}" data-spec="${escapeHTML(doc.specialization)}" data-day="${s.day}" data-time="${s.startTime}" style="display: inline-block; background: var(--teal-light, #DCEEEA); color: var(--primary); padding: 4px 8px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; margin: 2px; cursor: pointer;">
+                ⏰ ${s.day} ${s.startTime}
+              </span>
+            `).join('')
+          : `<span style="font-size: 0.8rem; color: var(--muted);">No open slots this week</span>`;
+
+        return `
+          <div class="doctor-schedule-card" style="background: var(--surface-card, #fff); border: 1px solid var(--border); border-radius: 10px; padding: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+            <div style="font-weight: 700; font-size: 1rem; color: var(--ink);">${escapeHTML(doc.name)}</div>
+            <div style="font-size: 0.82rem; color: var(--primary); font-weight: 600; margin-bottom: 6px;">🩺 ${escapeHTML(doc.specialization)}</div>
+            <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 10px;">
+              Exp: <strong>${doc.yearsOfExperience || 5} yrs</strong> | Rating: ⭐ <strong>${doc.rating || 4.8}</strong>
+            </div>
+            <div style="font-size: 0.8rem; font-weight: 600; color: var(--ink); margin-bottom: 6px;">Available Slots:</div>
+            <div style="margin-bottom: 10px;">${slotsHtml}</div>
+          </div>
+        `;
+      }).join('');
+
+      // Bind slot click to auto-book in chat
+      resultsContainer.querySelectorAll('.slot-badge-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const doc = btn.dataset.doc;
+          const spec = btn.dataset.spec;
+          const day = btn.dataset.day;
+          const time = btn.dataset.time;
+          
+          modal.classList.remove('active');
+          const msg = `I want to book an appointment with ${doc} for ${spec} on ${day} at ${time}`;
+          const overrides = {
+            specialization: spec,
+            preferredDoctor: doc,
+            timeframe: day,
+            preferredTime: time
+          };
+          sendMessage(msg, overrides);
+        });
+      });
+    } catch (err) {
+      console.error('[Doctor Modal] Load error:', err);
+      resultsContainer.innerHTML = `<div class="empty-state" style="color: var(--accent);">Failed to load doctor schedules.</div>`;
+    }
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    modal.classList.add('active');
+    loadDoctors();
+  });
+
+  closeBtn.addEventListener('click', () => {
+    modal.classList.remove('active');
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+    }
+  });
 }
 
 // Initialize on page load
 window.addEventListener('load', () => {
   startSession();
   initPatientHistory();
+  initDoctorSchedulesModal();
 });

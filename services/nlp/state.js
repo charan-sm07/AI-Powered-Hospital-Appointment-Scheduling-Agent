@@ -23,7 +23,7 @@ const TRANSLATIONS = {
     patientType: 'Are you a new or existing patient? If existing, please provide your Patient ID (e.g., P101).',
     patientName: 'Please enter your full name for the booking records.',
     patientPhone: 'Please enter your contact phone number.',
-    confirm: 'Please confirm your request details:\n- Department: {specialization}\n- Day: {timeframe}\n- Preferred Time: {preferredTime}\n- Name: {patientName}\n- Phone: {patientPhone}\n- Patient Status: {typeStr}\n\nIs this correct? (Yes/No)',
+    confirm: 'Please confirm your request details:\n- Department: {specialization}\n- Day: {timeframe}\n- Preferred Time: {preferredTime}\n- Preferred Doctor: {preferredDoctor}\n- Name: {patientName}\n- Phone: {patientPhone}\n- Patient Status: {typeStr}\n\nIs this correct? (Yes/No)',
     done: 'Your appointment decision has been made. Thank you!',
     frozen: 'This session has been locked due to security flags. Please contact administrative support.',
     default: 'How can I assist you?',
@@ -41,7 +41,7 @@ const TRANSLATIONS = {
     patientType: 'நீங்கள் புதியவரா அல்லது ஏற்கனவே உள்ள நோயாளிதானா? ஏற்கனவே உள்ள நோயாளி என்றால், உங்கள் நோயாளி ஐடியை (எ.கா., P101) வழங்கவும்.',
     patientName: 'முன்பதிவு பதிவுகளுக்காக உங்கள் முழு பெயரை உள்ளிடவும்.',
     patientPhone: 'உங்கள் தொடர்பு தொலைபேசி எண்ணை உள்ளிடவும்.',
-    confirm: 'தயவுசெய்து உங்கள் விவரங்களை உறுதிப்படுத்தவும்:\n- மருத்துவப் பிரிவு: {specialization}\n- நாள்: {timeframe}\n- விரும்பிய நேரம்: {preferredTime}\n- பெயர்: {patientName}\n- தொலைபேசி: {patientPhone}\n- நோயாளி நிலை: {typeStr}\n\nஇது சரியானதா? (ஆம்/இல்லை)',
+    confirm: 'தயவுசெய்து உங்கள் விவரங்களை உறுதிப்படுத்தவும்:\n- மருத்துவப் பிரிவு: {specialization}\n- நாள்: {timeframe}\n- விரும்பிய நேரம்: {preferredTime}\n- விரும்பிய மருத்துவர்: {preferredDoctor}\n- பெயர்: {patientName}\n- தொலைபேசி: {patientPhone}\n- நோயாளி நிலை: {typeStr}\n\nஇது சரியானதா? (ஆம்/இல்லை)',
     done: 'உங்கள் முன்பதிவு இறுதி செய்யப்பட்டது. நன்றி!',
     frozen: 'பாதுகாப்பு காரணங்களுக்காக இந்த அமர்வு பூட்டப்பட்டுள்ளது. தயவுசெய்து நிர்வாக ஆதரவைத் தொடர்பு கொள்ளவும்.',
     default: 'நான் உங்களுக்கு எப்படி உதவ முடியும்?',
@@ -59,13 +59,13 @@ const TRANSLATIONS = {
     patientType: 'क्या आप नए या पुराने मरीज हैं? यदि आप पुराने मरीज हैं, तो कृपया अपनी मरीज आईडी (जैसे, P101) प्रदान करें।',
     patientName: 'कृपया बुकिंग रिकॉर्ड के लिए अपना पूरा नाम दर्ज करें।',
     patientPhone: 'कृपया अपना संपर्क फ़ोन नंबर दर्ज करें।',
-    confirm: 'कृपया अपने विवरण की पुष्टि करें:\n- विभाग: {specialization}\n- दिन: {timeframe}\n- पसंदीदा समय: {preferredTime}\n- नाम: {patientName}\n- फ़ोन: {patientPhone}\n- मरीज की स्थिति: {typeStr}\n\nक्या यह सही है? (हाँ/नहीं)',
+    confirm: 'कृपया अपने विवरण की पुष्टि करें:\n- विभाग: {specialization}\n- दिन: {timeframe}\n- पसंदीदा समय: {preferredTime}\n- पसंदीदा डॉक्टर: {preferredDoctor}\n- नाम: {patientName}\n- फ़ोन: {patientPhone}\n- मरीज की स्थिति: {typeStr}\n\nक्या यह सही है? (हाँ/नहीं)',
     done: 'आपका अपॉइंटमेंट तय हो गया है। धन्यवाद!',
     frozen: 'सुरक्षा कारणों से यह सत्र लॉक कर दिया गया है। कृपया व्यवस्थापक से संपर्क करें।',
     default: 'मैं आपकी किस प्रकार सहायता कर सकता हूँ?',
     specHelp: 'कृपया इनमें से कोई एक विभाग चुनें: Cardiology, Dermatology, General Medicine, Orthopedics, Pediatrics, या ENT.',
     timeHelp: 'कृपया "सुबह", "दोपहर" या विशिष्ट समय जैसे "10:00" प्रदान करें।',
-    timeframeHelp: 'कृपया एक सप्ताह का दिन निर्दिष्ट करें, जैसे "सोमवार" या "शुक्रवार"।',
+    timeframeHelp: 'कृपया एक सप्ताह का दिन निर्दिष्ट करें, जैसे "सोमवार" या "सोमवार"।',
     patientTypeHelp: 'क्या आप पुराने मरीज हैं? कृपया "existing" के साथ अपनी आईडी (जैसे "P101") लिखें, या "new patient" लिखें।',
     nameHelp: 'कृपया एक वैध पूरा नाम दर्ज करें (केवल अक्षर, नकली नाम नहीं)।',
     phoneHelp: 'कृपया एक वैध फ़ोन नंबर दर्ज करें (7 से 15 अंक)।'
@@ -96,6 +96,7 @@ export function createSession(sessionId) {
       specialization: null,
       preferredTime: null,
       timeframe: null,
+      preferredDoctor: null,
       isExistingPatient: null,
       patientId: null,
       patientName: null,
@@ -189,15 +190,18 @@ export function getPromptForState(session) {
     case States.COLLECTING_PATIENT_PHONE:
       return dict.patientPhone;
     case States.CONFIRMING:
-      const { specialization, preferredTime, timeframe, patientName, patientPhone } = session.slots;
+      const { specialization, preferredTime, timeframe, preferredDoctor, patientName, patientPhone } = session.slots;
       const typeStr = session.slots.isExistingPatient 
         ? (lang === 'ta' ? `ஏற்கனவே உள்ள நோயாளி (ID: ${session.slots.patientId})` : lang === 'hi' ? `पुराने मरीज (ID: ${session.slots.patientId})` : `Existing (ID: ${session.slots.patientId})`)
         : (lang === 'ta' ? 'புதியவர்' : lang === 'hi' ? 'नए मरीज' : 'New');
       
+      const docStr = preferredDoctor || (lang === 'ta' ? 'கிடைக்கக்கூடிய எந்த ஒரு நிபுணரும்' : lang === 'hi' ? 'कोई भी उपलब्ध विशेषज्ञ' : 'Any Available Specialist');
+
       return dict.confirm
         .replace('{specialization}', specialization)
         .replace('{timeframe}', timeframe)
         .replace('{preferredTime}', preferredTime)
+        .replace('{preferredDoctor}', docStr)
         .replace('{patientName}', patientName || 'N/A')
         .replace('{patientPhone}', patientPhone || 'N/A')
         .replace('{typeStr}', typeStr);

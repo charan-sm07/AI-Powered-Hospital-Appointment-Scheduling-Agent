@@ -17,8 +17,25 @@ const EMERGENCY_KEYWORDS = [
   'stroke', 'numbness', 'face drooping',
   'severe bleeding', 'hemorrhage',
   'unconscious', 'passed out', 'fainted',
-  'seizure', 'convulsion'
+  'seizure', 'convulsion',
+  'நெஞ்சு வலி', 'மூச்சு திணறல்', 'ரத்தப்போக்கு', 'மயக்கம்', 'மாரடைப்பு',
+  'सीने में दर्द', 'सांस लेने में तकलीफ', 'खून बहना', 'बेहोश'
 ];
+
+const MANAGEMENT_KEYWORDS = [
+  'cancel', 'cancellation', 'reschedule', 'change appointment',
+  'my appointment', 'my booking', 'check status', 'cancel appointment',
+  'ரத்து', 'ரத்து செய்', 'முன்பதிவு ரத்து', 'என் முன்பதிவு',
+  'रद्द', 'अपॉइंटमेंट रद्द', 'रद्द करें'
+];
+
+/**
+ * Checks if the text indicates a request for appointment cancellation or lookup.
+ */
+export function detectManagementIntent(text) {
+  const clean = text.toLowerCase();
+  return MANAGEMENT_KEYWORDS.some(kw => clean.includes(kw));
+}
 
 const SYMPTOM_RULES = [
   {

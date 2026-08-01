@@ -2,7 +2,7 @@ import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { getSession, createSession, States, getSlotNameForState, getPromptForState, transitionState, detectLanguage } from '../services/nlp/state.js';
 import { scoreMessage } from '../services/security/scorer.js';
-import { extractSlot, detectEmergency, predictSymptomSpecialist } from '../services/nlp/extractor.js';
+import { extractSlot, detectEmergency, detectManagementIntent, predictSymptomSpecialist } from '../services/nlp/extractor.js';
 import { retrieve } from '../services/rag/retriever.js';
 import { generateAppointmentDecision, generateNotificationTemplates } from '../services/decision/engine.js';
 import { validateRealName, validateRealPhone } from '../services/security/validator.js';
@@ -67,6 +67,32 @@ async function checkAndPrefillPatient(session) {
 }
 
 /**
+ * Extracts doctor name mentions dynamically from the message.
+ */
+async function extractDoctorMention(text, specialization) {
+  if (!text) return null;
+  try {
+    const query = specialization ? { specialization } : {};
+    const doctors = await Doctor.find(query);
+    for (const doc of doctors) {
+      const cleanName = doc.name.toLowerCase().replace('dr. ', '').trim();
+      const cleanText = text.toLowerCase();
+      
+      const nameParts = cleanName.split(/\s+/);
+      const hasLastName = nameParts.length > 1 && cleanText.includes(nameParts[nameParts.length - 1]);
+      const hasFullName = cleanText.includes(cleanName);
+      
+      if (hasFullName || (hasLastName && nameParts[nameParts.length - 1].length > 3)) {
+        return doc.name;
+      }
+    }
+  } catch (err) {
+    console.error('[Mention Extractor] Error:', err);
+  }
+  return null;
+}
+
+/**
  * POST /api/chat/start
  * Initializes a new scheduling session.
  */
@@ -110,7 +136,7 @@ router.post('/message', async (req, res) => {
         session.slots.isExistingPatient = slotOverrides.patientType.isExisting;
         session.slots.patientId = slotOverrides.patientType.patientId;
       }
-      for (const key of ['specialization', 'preferredTime', 'timeframe', 'isExistingPatient', 'patientId', 'patientName', 'patientPhone']) {
+      for (const key of ['specialization', 'preferredTime', 'timeframe', 'preferredDoctor', 'isExistingPatient', 'patientId', 'patientName', 'patientPhone']) {
         if (slotOverrides[key] !== undefined) {
           session.slots[key] = slotOverrides[key];
         }
@@ -119,6 +145,13 @@ router.post('/message', async (req, res) => {
       transitionState(session);
       skippedToNextPrompt = true;
       console.log(`[Slot Overrides] Applied overrides for session ${sessionId}:`, slotOverrides);
+    }
+
+    // Dynamic doctor mention extraction
+    const mentionedDoc = await extractDoctorMention(text, session.slots.specialization);
+    if (mentionedDoc) {
+      session.slots.preferredDoctor = mentionedDoc;
+      console.log(`[Mention Extractor] Detected preferred doctor mention: ${mentionedDoc} for session: ${sessionId}`);
     }
 
     // Auto-detect and store user language choice
@@ -154,7 +187,28 @@ router.post('/message', async (req, res) => {
         currentState: States.FROZEN,
         message: emergencyMsg,
         flagged: true,
+        isEmergency: true,
         slots: session.slots
+      });
+    }
+
+    // Management Intent Check (Lookup / Cancellation)
+    if (detectManagementIntent(text) && session.currentState !== States.CONFIRMING) {
+      const lang = session.language || 'en';
+      const managementMsg = lang === 'ta'
+        ? '📅 **முன்பதிவு மேலாண்மை**\n\nஉங்கள் முன்பதிவை ரத்து செய்ய அல்லது பார்க்க, உங்கள் **நோயாளி ஐடி** (எ.கா: P101) அல்லது **குறிப்பு ஐடி** ஐ கீழே உள்ள "Manage Appointments" பொத்தானைப் பயன்படுத்தி பதிவு செய்யவும்.'
+        : lang === 'hi'
+          ? '📅 **अपॉइंटमेंट प्रबंधन**\n\nअपना अपॉइंटमेंट रद्द करने या देखने के लिए, कृपया अपनी **मरीज आईडी** (जैसे: P101) का उपयोग करें।'
+          : '📅 **Appointment Management**\n\nTo view or cancel an active booking, click **"Manage Bookings"** or enter your **Patient ID** (e.g., P101).';
+
+      session.history.push({ role: 'bot', text: managementMsg });
+      return res.status(200).json({
+        sessionId,
+        currentState: session.currentState,
+        message: managementMsg,
+        isManagementIntent: true,
+        slots: session.slots,
+        availableSlots: []
       });
     }
 

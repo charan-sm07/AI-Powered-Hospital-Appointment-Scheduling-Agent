@@ -220,30 +220,37 @@
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.72rem;
       font-weight: 600;
-      padding: 4px 8px;
-      border-radius: 4px;
+      padding: 6px 12px;
+      border-radius: 20px;
       text-transform: uppercase;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid transparent;
     }
 
     .badge-confirmed {
-      background-color: var(--primary-soft);
-      color: var(--primary);
+      background-color: #E6F4EA;
+      color: #137333;
+      border-color: #C2E7C9;
     }
 
     .badge-alternative {
-      background-color: #fbeee8;
-      color: var(--accent);
+      background-color: #FEF7E0;
+      color: #B06000;
+      border-color: #FFEFC2;
     }
 
     .badge-waitlisted {
-      background-color: #fbeee8;
-      color: var(--accent);
+      background-color: #F1F3F4;
+      color: #5F6368;
+      border-color: #DADCE0;
     }
 
     .badge-quarantined {
-      background-color: #FFF0EB;
-      color: #D13F13;
+      background-color: #FCE8E6;
+      color: #C5221F;
+      border-color: #FAD2CF;
     }
 
     .mono {
@@ -269,6 +276,14 @@
     .reasoning-text:hover {
       white-space: normal;
       word-break: break-word;
+    }
+
+    .payload-text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      max-width: 380px;
+      word-break: break-all;
     }
 
     .empty-state {
@@ -660,6 +675,254 @@
       box-shadow: 0 20px 50px rgba(14, 110, 99, 0.06) !important;
     }
 
+    /* Admin Grid Layout */
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 30px;
+      align-items: start;
+    }
+    
+    .admin-main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+    
+    /* Emergency Sidebar styling */
+    .emergency-sidebar {
+      position: sticky;
+      top: 40px;
+      background: rgba(255, 245, 242, 0.85) !important;
+      backdrop-filter: blur(20px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+      border: 1px solid rgba(255, 217, 204, 0.8) !important;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 15px 35px rgba(232, 115, 75, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+      transition: all 0.3s ease;
+    }
+
+    .emergency-sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 217, 204, 0.8);
+      padding-bottom: 12px;
+      margin-bottom: 4px;
+    }
+
+    .emergency-sidebar-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #D13F13 !important;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-left: none !important;
+      padding-left: 0 !important;
+      margin: 0 !important;
+    }
+
+    .emergency-sidebar-count {
+      font-size: 0.78rem;
+      font-weight: bold;
+      color: #D13F13;
+      background: #FFD9CC;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .emergency-sidebar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Severity Cards */
+    .emergency-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(22, 35, 43, 0.02);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .emergency-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(22, 35, 43, 0.05);
+    }
+
+    .severity-critical {
+      border-left: 6px solid #D13F13;
+      background: linear-gradient(135deg, #FFF8F7 0%, #FFFFFF 100%);
+    }
+
+    .severity-high {
+      border-left: 6px solid #F59F00;
+      background: linear-gradient(135deg, #FFFDF5 0%, #FFFFFF 100%);
+    }
+
+    .severity-regular {
+      border-left: 6px solid #1C7ED6;
+      background: linear-gradient(135deg, #F8FBFE 0%, #FFFFFF 100%);
+    }
+
+    .severity-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .severity-badge-critical {
+      background: #FCE8E6;
+      color: #C5221F;
+    }
+
+    .severity-badge-high {
+      background: #FEF7E0;
+      color: #B06000;
+    }
+
+    .severity-badge-regular {
+      background: #E8F0FE;
+      color: #1A73E8;
+    }
+
+    /* Emergency actions */
+    .emergency-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .btn-emergency-action {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 6px 4px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #FFF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-emergency-action:hover {
+      background: #F8F9FA;
+      border-color: var(--muted);
+    }
+
+    .action-completed {
+      background: #E6F4EA !important;
+      color: #137333 !important;
+      border-color: #C2E7C9 !important;
+      cursor: not-allowed;
+    }
+
+    /* Responsive grid */
+    @media (max-width: 1024px) {
+      .admin-layout {
+        grid-template-columns: 1fr;
+      }
+      .emergency-sidebar {
+        position: relative;
+        top: 0;
+        max-height: none;
+    /* Doctor Weekly schedule matrix table styles */
+    .schedule-matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 0.76rem;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+    .schedule-matrix-table th, .schedule-matrix-table td {
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 6px 4px;
+      text-align: center;
+    }
+    .schedule-matrix-table th {
+      background: #F1F3F5;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      font-size: 0.65rem;
+      letter-spacing: 0.5px;
+    }
+    .time-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      color: var(--muted);
+      background: #F8F9FA;
+      white-space: nowrap;
+      font-size: 0.72rem;
+    }
+    .matrix-cell {
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      padding: 4px 2px;
+      user-select: none;
+      font-size: 0.65rem;
+    }
+    .matrix-cell-empty {
+      color: rgba(0, 0, 0, 0.15);
+      cursor: not-allowed;
+      font-weight: normal;
+      background-color: #FAFAFA;
+    }
+    .matrix-cell-available {
+      background-color: #E6F4EA;
+      color: #137333;
+      border: 1px solid #C2E7C9;
+    }
+    .matrix-cell-available:hover {
+      background-color: #D2ECD7;
+      transform: scale(1.05);
+    }
+    .matrix-cell-blocked {
+      background-color: #FCE8E6;
+      color: #C5221F;
+      border: 1px solid #FAD2CF;
+    }
+    .matrix-cell-blocked:hover {
+      background-color: #F8D0CD;
+      transform: scale(1.05);
+    }
+    .matrix-cell-booked {
+      background-color: #E8F0FE;
+      color: #1A73E8;
+      border: 1px solid #D2E3FC;
+    }
+    .matrix-cell-booked:hover {
+      background-color: #C2D7FA;
+      transform: scale(1.05);
+    }
   </style>
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -709,19 +972,11 @@
       </div>
     </header>
 
-    <!-- Emergency Alerts Notification Pane -->
-    <section id="emergency-pane" class="emergency-panel hidden">
-      <div class="emergency-header">
-        <h2 class="emergency-title"><span class="alert-pulse"></span> Medical Emergency Alerts</h2>
-        <span style="font-size: 0.8rem; font-weight: bold; color: #D13F13; background: #FFD9CC; padding: 2px 8px; border-radius: 4px;" id="emergency-count">0 Active Alerts</span>
-      </div>
-      <div id="emergency-list" style="display: flex; flex-direction: column; gap: 8px;">
-        <!-- Alerts will be dynamically added here -->
-      </div>
-    </section>
-
-    <!-- Dashboard Stats Cards -->
-    <section class="stats-grid">
+    <div class="admin-layout">
+      <!-- Main Content Left Column -->
+      <div class="admin-main-content">
+        <!-- Dashboard Stats Cards -->
+        <section class="stats-grid">
       <div class="stat-card">
         <div class="stat-icon">📅</div>
         <div class="stat-details">
@@ -786,11 +1041,40 @@
     <!-- Appointment Requests -->
     <section class="card">
       <h2>Appointment Requests Log <button onclick="exportRequestsToCSV()" class="btn btn-secondary" style="font-size: 0.75rem; padding: 4px 10px; margin-left: 15px;">Export CSV</button> <span style="font-size: 0.8rem; font-weight: normal; color: var(--muted); margin-left: 10px;">(Click any row to inspect details)</span></h2>
+      
+      <!-- Horizontal Filter Panel -->
+      <div class="filter-panel" style="display: flex; gap: 12px; margin-top: 15px; margin-bottom: 15px; flex-wrap: wrap; background: #F8F9FA; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+        <input type="text" id="filter-search" placeholder="Search Patient Name/ID..." class="filter-input" oninput="applyFilters()" style="flex: 1; min-width: 180px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem;">
+        
+        <select id="filter-doctor" onchange="applyFilters()" class="filter-input" style="padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; background: white;">
+          <option value="">All Doctors</option>
+        </select>
+
+        <select id="filter-specialty" onchange="applyFilters()" class="filter-input" style="padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; background: white;">
+          <option value="">All Specialties</option>
+          <option value="General Medicine">General Medicine</option>
+          <option value="Cardiology">Cardiology</option>
+          <option value="Dermatology">Dermatology</option>
+          <option value="Pediatrics">Pediatrics</option>
+        </select>
+
+        <select id="filter-status" onchange="applyFilters()" class="filter-input" style="padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; background: white;">
+          <option value="">All Statuses</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="alternative_suggested">Alternative Suggested</option>
+          <option value="waitlisted">Waitlisted</option>
+        </select>
+        
+        <button onclick="resetFilters()" class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;">Reset</button>
+      </div>
+
       <div class="table-responsive">
         <table>
           <thead>
             <tr>
               <th>Patient ID</th>
+              <th>Name</th>
+              <th>Phone</th>
               <th>Specialization</th>
               <th>Verdict</th>
               <th>Assigned Doctor</th>
@@ -801,7 +1085,7 @@
           </thead>
           <tbody id="requests-tbody">
             <tr>
-              <td colspan="7" class="empty-state">Loading booking requests...</td>
+              <td colspan="9" class="empty-state">Loading booking requests...</td>
             </tr>
           </tbody>
         </table>
@@ -855,6 +1139,20 @@
       </div>
     </section>
 
+      </div> <!-- Close admin-main-content -->
+
+      <!-- Persistent Sidebar Right Column -->
+      <aside id="emergency-sidebar" class="emergency-sidebar">
+        <div class="emergency-sidebar-header">
+          <h2 class="emergency-sidebar-title"><span class="alert-pulse"></span> Clinical Triage</h2>
+          <span id="emergency-count" class="emergency-sidebar-count">0 Active Alerts</span>
+        </div>
+        <div id="emergency-list" class="emergency-sidebar-list">
+          <div class="empty-state">System secure. No active alerts.</div>
+        </div>
+      </aside>
+    </div> <!-- Close admin-layout -->
+
     <!-- Professional Footer -->
     <footer style="margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); text-align: center; font-size: 0.8rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px;">
       <div>Powered by <strong>MediSlot AI</strong></div>
@@ -876,9 +1174,98 @@
     </div>
   </div>
 
+  <!-- Conflict Resolver Modal -->
+  <div id="conflict-modal" class="modal hidden">
+    <div class="modal-content" style="border-color: #FEF7E0;">
+      <div class="modal-header" style="border-bottom-color: #FFEFC2;">
+        <h3 style="font-family: 'Sora', sans-serif; color: #B06000; margin: 0;">⚠️ AI Conflict Auto-Resolver</h3>
+        <span id="close-conflict-btn" class="close-btn">&times;</span>
+      </div>
+      <div class="modal-body" id="conflict-body-content" style="padding-top: 15px;">
+         <!-- Dynamic content -->
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px;">
+        <button id="cancel-conflict-btn" class="btn btn-secondary">Cancel</button>
+        <button id="approve-dispatch-btn" class="btn btn-primary" style="background: #D13F13; border-color: #D13F13;">Approve & Dispatch All</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let activeCharts = {};
     window.requestsList = [];
+
+    // Severity Triage Helper
+    function getSeverity(messageText) {
+      const text = (messageText || '').toLowerCase();
+      if (text.includes('chest pain') || text.includes('breathing') || text.includes('stroke') || text.includes('unconscious') || text.includes('numbness') || text.includes('paralysis') || text.includes('heart attack')) {
+        return {
+          level: 'CRITICAL',
+          colorClass: 'severity-critical',
+          badgeClass: 'severity-badge-critical',
+          label: 'Life-Threatening Emergency'
+        };
+      }
+      if (text.includes('fever') || text.includes('fracture') || text.includes('accident') || text.includes('bleeding') || text.includes('injury') || text.includes('pain') || text.includes('vomiting')) {
+        return {
+          level: 'HIGH',
+          colorClass: 'severity-high',
+          badgeClass: 'severity-badge-high',
+          label: 'High Priority Routing'
+        };
+      }
+      return {
+        level: 'REGULAR',
+        colorClass: 'severity-regular',
+        badgeClass: 'severity-badge-regular',
+        label: 'Regular Dispatch'
+      };
+    }
+
+    // Emergency Action Handler
+    window.handleTriageAction = function(e, evtKey, actionType) {
+      e.stopPropagation();
+      window.activeTriageActions = window.activeTriageActions || {};
+      window.activeTriageActions[evtKey] = window.activeTriageActions[evtKey] || { dispatch: false, notify: false, call: false };
+      window.activeTriageActions[evtKey][actionType] = true;
+      
+      let actionLabel = '';
+      if (actionType === 'dispatch') actionLabel = 'ER Dispatch Unit';
+      else if (actionType === 'notify') actionLabel = 'On-Duty Specialist';
+      else if (actionType === 'call') actionLabel = 'Direct Phone Call';
+      
+      alert(`Action Triggered: ${actionLabel} initiated for session ref ${evtKey.substring(0, 8)}.`);
+      
+      // Re-render logs to show the active states immediately
+      loadLogs();
+    }
+
+    // View Security Threat Full Payload Modal
+    window.viewFullPayload = function(e, id, content) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const modal = document.getElementById('inspector-modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalBody = document.getElementById('modal-body-content');
+      
+      modalTitle.textContent = "Security Attack Payload Details";
+      modalBody.innerHTML = `
+        <div class="inspector-section">
+          <div class="inspector-title">⚠️ Threat Indicator / Raw Input</div>
+          <div class="template-box" style="max-height: 400px; font-size: 0.85rem; background: #FAFBFB; border-color: #FAD2CF; color: #C5221F;">${content}</div>
+        </div>
+        <div class="inspector-section">
+          <div class="inspector-title">🛡️ Quarantine Details</div>
+          <div class="inspector-text">
+            <strong>Session Reference:</strong> ${id || 'N/A'}<br>
+            <strong>Mitigation Trigger:</strong> Blocked Request & Frozen Session State
+          </div>
+        </div>
+      `;
+      modal.classList.remove('hidden');
+    }
 
     // Profile Dropdown Toggle
     const profileBtn = document.getElementById('profile-btn');
@@ -969,32 +1356,20 @@
         window.requestsList = requests;
         const reqTbody = document.getElementById('requests-tbody');
         
-        if (requests.length === 0) {
-          reqTbody.innerHTML = `<tr><td colspan="7" class="empty-state">No appointment requests recorded yet.</td></tr>`;
-        } else {
-          reqTbody.innerHTML = requests.map((req, index) => {
-            let badgeClass = 'badge-confirmed';
-            let badgeText = req.verdict;
-            if (req.verdict === 'alternative_suggested') badgeClass = 'badge-alternative';
-            else if (req.verdict === 'waitlisted') badgeClass = 'badge-waitlisted';
-            
-            const slotStr = req.confirmedSlot && req.confirmedSlot.day
-              ? `${req.confirmedSlot.day} ${req.confirmedSlot.time || ''}`
-              : 'None';
-
-            return `
-              <tr class="clickable-row" onclick="openInspector(${index})">
-                <td class="mono">${escapeHTML(req.patientId)}</td>
-                <td>${escapeHTML(req.specializationRequested || 'None')}</td>
-                <td><span class="badge ${badgeClass}">${escapeHTML(badgeText)}</span></td>
-                <td>${escapeHTML(req.assignedDoctor || 'Unassigned')}</td>
-                <td class="mono">${escapeHTML(slotStr)}</td>
-                <td><div class="reasoning-text" title="${escapeHTML(req.reasoning)}">${escapeHTML(req.reasoning)}</div></td>
-                <td class="timestamp">${new Date(req.timestamp).toLocaleString()}</td>
-              </tr>
-            `;
-          }).join('');
+        // Populate doctor filter options dynamically if empty
+        const docSelect = document.getElementById('filter-doctor');
+        if (docSelect.options.length <= 1) {
+          const uniqueDocs = [...new Set(requests.map(r => r.assignedDoctor).filter(Boolean))];
+          uniqueDocs.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d;
+            opt.textContent = d.startsWith('Dr. ') ? d : 'Dr. ' + d;
+            docSelect.appendChild(opt);
+          });
         }
+
+        // Apply filters to render requests log
+        applyFilters();
 
         // Load Security Events
         const secResponse = await fetch('/api/admin/security-events');
@@ -1010,10 +1385,17 @@
             if (evt.suspicionScore >= 0.55) scoreColor = '#d9480f';
             else if (evt.suspicionScore >= 0.3) scoreColor = '#f59f00';
 
+            let displayText = escapeHTML(evt.messageText);
+            if (displayText.length > 50) {
+              const fullText = escapeHTML(evt.messageText);
+              const shortText = displayText.substring(0, 45) + '...';
+              displayText = `${shortText} <a href="#" onclick="viewFullPayload(event, '${evt._id || evt.userId}', \`${fullText.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" style="color: var(--primary); font-weight: 600; text-decoration: underline; margin-left: 5px;">[View Payload]</a>`;
+            }
+
             return `
               <tr>
                 <td class="mono">${escapeHTML(evt.userId.substring(0, 15))}...</td>
-                <td><div class="reasoning-text" title="${escapeHTML(evt.messageText)}">${escapeHTML(evt.messageText)}</div></td>
+                <td><div class="payload-text" title="${escapeHTML(evt.messageText)}">${displayText}</div></td>
                 <td class="mono" style="color: ${scoreColor}; font-weight: 600;">${evt.suspicionScore.toFixed(2)}</td>
                 <td><span class="badge badge-quarantined">${escapeHTML(evt.actionTaken)}</span></td>
                 <td class="timestamp">${new Date(evt.timestamp).toLocaleString()}</td>
@@ -1022,26 +1404,56 @@
           }).join('');
         }
 
-        // Process emergencies for the Emergency Notification Pane
+        // Process emergencies for the Emergency Triage Sidebar
         const emergencies = events.filter(evt => evt.actionTaken === 'emergency');
-        const emergencyPane = document.getElementById('emergency-pane');
         const emergencyCount = document.getElementById('emergency-count');
         const emergencyList = document.getElementById('emergency-list');
+        
+        window.activeTriageActions = window.activeTriageActions || {};
+        
         if (emergencies.length > 0) {
           emergencyCount.textContent = `${emergencies.length} Active Alert${emergencies.length > 1 ? 's' : ''}`;
-          emergencyList.innerHTML = emergencies.map(evt => `
-            <div class="emergency-item">
-              <div>
-                <span class="emergency-message">⚠️ ${escapeHTML(evt.messageText)}</span>
-                <br>
-                <span class="emergency-meta">Session ID: ${escapeHTML(evt.userId)}</span>
+          emergencyList.innerHTML = emergencies.map(evt => {
+            const severity = getSeverity(evt.messageText);
+            const evtKey = evt._id || evt.userId || String(evt.timestamp);
+            const actions = window.activeTriageActions[evtKey] || { dispatch: false, notify: false, call: false };
+            
+            const dispatchClass = actions.dispatch ? 'action-completed' : '';
+            const dispatchText = actions.dispatch ? '🚑 Ambulance #3 Dispatched - ETA 8m' : '🚑 Dispatch ER';
+            const notifyClass = actions.notify ? 'action-completed' : '';
+            const notifyText = actions.notify ? '🩺 Specialist Notified' : '🩺 Notify Specialist';
+            const callClass = actions.call ? 'action-completed' : '';
+            const callText = actions.call ? '📞 Called' : '📞 Direct Call';
+            
+            return `
+              <div class="emergency-card ${severity.colorClass}">
+                <div style="display: flex; justify-content: space-between; align-items: start; gap: 8px;">
+                  <span class="severity-badge ${severity.badgeClass}">${severity.level}</span>
+                  <span style="font-size: 0.72rem; color: var(--muted);">${new Date(evt.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                </div>
+                <div style="font-size: 0.88rem; font-weight: 500; color: var(--ink); line-height: 1.4;">
+                  ⚠️ ${escapeHTML(evt.messageText)}
+                </div>
+                <div style="font-size: 0.75rem; color: var(--muted); font-family: monospace; word-break: break-all; border-top: 1px dashed var(--border); padding-top: 8px;">
+                  Session ID: ${escapeHTML(evt.userId.substring(0, 18))}...
+                </div>
+                <div class="emergency-actions">
+                  <button class="btn-emergency-action ${dispatchClass}" onclick="handleTriageAction(event, '${evtKey}', 'dispatch')" ${actions.dispatch ? 'disabled' : ''}>
+                    ${dispatchText}
+                  </button>
+                  <button class="btn-emergency-action ${notifyClass}" onclick="handleTriageAction(event, '${evtKey}', 'notify')" ${actions.notify ? 'disabled' : ''}>
+                    ${notifyText}
+                  </button>
+                  <button class="btn-emergency-action ${callClass}" onclick="handleTriageAction(event, '${evtKey}', 'call')" ${actions.call ? 'disabled' : ''}>
+                    ${callText}
+                  </button>
+                </div>
               </div>
-              <div class="emergency-meta">${new Date(evt.timestamp).toLocaleString()}</div>
-            </div>
-          `).join('');
-          emergencyPane.classList.remove('hidden');
+            `;
+          }).join('');
         } else {
-          emergencyPane.classList.add('hidden');
+          emergencyCount.textContent = '0 Active Alerts';
+          emergencyList.innerHTML = `<div class="empty-state" style="padding: 20px 0;">System secure. No active alerts.</div>`;
         }
 
         // Load Audit Logs
@@ -1072,31 +1484,91 @@
         const docResponse = await fetch('/api/admin/doctors');
         const doctors = await docResponse.json();
 
+        window.allDoctors = doctors;
+
         // Render Doctor schedules grid
         const doctorGrid = document.getElementById('doctor-grid');
         if (doctors.length === 0) {
           doctorGrid.innerHTML = `<div class="empty-state">No doctors registered.</div>`;
         } else {
           doctorGrid.innerHTML = doctors.map(doc => {
-            const slotsHtml = doc.availableSlots.map(slot => {
-              const slotClass = slot.isBooked ? 'slot-blocked' : 'slot-available';
-              const titleText = slot.isBooked ? 'Click to Release Slot' : 'Click to Block Slot';
-              return `
-                <span class="slot-chip ${slotClass}" title="${titleText}" onclick="toggleSlot('${doc.doctorId}', '${slot.day}', '${slot.startTime}', ${!slot.isBooked})">
-                  ${slot.day.substring(0,3)} ${slot.startTime}
-                </span>
-              `;
-            }).join('');
+            const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            const hours = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+            
+            // Build table matrix
+            let tableHtml = `
+              <table class="schedule-matrix-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                  </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            hours.forEach(hour => {
+              tableHtml += `<tr><td class="time-label">${hour}</td>`;
+              
+              weekdays.forEach(day => {
+                // Find matching slot for this doctor
+                const slot = doc.availableSlots.find(s => s.day === day && s.startTime.startsWith(hour.substring(0, 3)));
+                
+                if (!slot) {
+                  tableHtml += `<td><div class="matrix-cell matrix-cell-empty">-</div></td>`;
+                } else {
+                  // Check if slot has a confirmed patient booking in requests
+                  const hasBooking = requests.some(r => 
+                    r.verdict === 'confirmed' && 
+                    (r.assignedDoctor === doc.name || r.assignedDoctor === 'Dr. ' + doc.name || doc.name === 'Dr. ' + r.assignedDoctor) && 
+                    r.confirmedSlot && 
+                    r.confirmedSlot.day === day && 
+                    r.confirmedSlot.time && r.confirmedSlot.time.startsWith(slot.startTime)
+                  );
+                  
+                  let cellClass = 'matrix-cell-available';
+                  let cellText = 'Avail';
+                  let titleText = 'Click to Block Slot';
+                  let actionVal = true; // block it
+                  
+                  if (hasBooking) {
+                    cellClass = 'matrix-cell-booked';
+                    cellText = 'Booked';
+                    titleText = 'Booked by patient. Click to Release & Reschedule';
+                    actionVal = false; // release it
+                  } else if (slot.isBooked) {
+                    cellClass = 'matrix-cell-blocked';
+                    cellText = 'Blocked';
+                    titleText = 'Blocked by administrator. Click to Release Slot';
+                    actionVal = false; // release it
+                  }
+                  
+                  tableHtml += `
+                    <td>
+                      <div class="matrix-cell ${cellClass}" title="${titleText}" onclick="handleSlotClick('${doc.doctorId}', '${day}', '${slot.startTime}', ${actionVal})">
+                        ${cellText}
+                      </div>
+                    </td>
+                  `;
+                }
+              });
+              
+              tableHtml += `</tr>`;
+            });
+            
+            tableHtml += `</tbody></table>`;
 
             return `
-              <div class="doctor-card">
+              <div class="doctor-card" style="padding: 16px;">
                 <div class="doctor-card-header">
                   <span class="doctor-name">${escapeHTML(doc.name.startsWith('Dr. ') ? doc.name : 'Dr. ' + doc.name)}</span>
                   <span class="doctor-spec">${escapeHTML(doc.specialization)}</span>
                 </div>
-                <div class="slots-container">
-                  ${slotsHtml}
-                </div>
+                ${tableHtml}
               </div>
             `;
           }).join('');
@@ -1115,6 +1587,75 @@
       } catch (err) {
         console.error('Error fetching admin logs:', err);
       }
+    }
+
+    // Horizontal Filtering and Rendering Logic
+    window.applyFilters = function() {
+      const searchVal = document.getElementById('filter-search').value.toLowerCase();
+      const docVal = document.getElementById('filter-doctor').value;
+      const specVal = document.getElementById('filter-specialty').value;
+      const statusVal = document.getElementById('filter-status').value;
+      
+      const filtered = (window.requestsList || []).filter(req => {
+        const matchesSearch = !searchVal || 
+          (req.patientName || '').toLowerCase().includes(searchVal) || 
+          (req.patientId || '').toLowerCase().includes(searchVal);
+        
+        let matchesDoc = true;
+        if (docVal) {
+          const reqDoc = (req.assignedDoctor || '').replace(/^Dr\.\s+/i, '').toLowerCase();
+          const selectDoc = docVal.replace(/^Dr\.\s+/i, '').toLowerCase();
+          matchesDoc = reqDoc === selectDoc;
+        }
+        
+        const matchesSpec = !specVal || req.specializationRequested === specVal;
+        const matchesStatus = !statusVal || req.verdict === statusVal;
+        
+        return matchesSearch && matchesDoc && matchesSpec && matchesStatus;
+      });
+      
+      renderFilteredRequests(filtered);
+    }
+    
+    window.resetFilters = function() {
+      document.getElementById('filter-search').value = '';
+      document.getElementById('filter-doctor').value = '';
+      document.getElementById('filter-specialty').value = '';
+      document.getElementById('filter-status').value = '';
+      applyFilters();
+    }
+    
+    function renderFilteredRequests(requests) {
+      const reqTbody = document.getElementById('requests-tbody');
+      if (requests.length === 0) {
+        reqTbody.innerHTML = `<tr><td colspan="9" class="empty-state">No matching booking requests found.</td></tr>`;
+        return;
+      }
+      reqTbody.innerHTML = requests.map(req => {
+        const index = window.requestsList.indexOf(req);
+        let badgeClass = 'badge-confirmed';
+        let badgeText = req.verdict;
+        if (req.verdict === 'alternative_suggested') badgeClass = 'badge-alternative';
+        else if (req.verdict === 'waitlisted') badgeClass = 'badge-waitlisted';
+        
+        const slotStr = req.confirmedSlot && req.confirmedSlot.day
+          ? `${req.confirmedSlot.day} ${req.confirmedSlot.time || ''}`
+          : 'None';
+
+        return `
+          <tr class="clickable-row" onclick="openInspector(${index})">
+            <td class="mono">${escapeHTML(req.patientId)}</td>
+            <td>${escapeHTML(req.patientName || 'N/A')}</td>
+            <td>${escapeHTML(req.patientPhone || 'N/A')}</td>
+            <td>${escapeHTML(req.specializationRequested || 'None')}</td>
+            <td><span class="badge ${badgeClass}">${escapeHTML(badgeText)}</span></td>
+            <td>${escapeHTML(req.assignedDoctor || 'Unassigned')}</td>
+            <td class="mono">${escapeHTML(slotStr)}</td>
+            <td><div class="reasoning-text" title="${escapeHTML(req.reasoning)}">${escapeHTML(req.reasoning)}</div></td>
+            <td class="timestamp">${new Date(req.timestamp).toLocaleString()}</td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function buildCharts(requests, doctors, events) {
@@ -1294,6 +1835,74 @@
     }
     window.toggleSlot = toggleSlot;
 
+    // Handle Slot Click with Triage Conflict Resolver
+    window.handleSlotClick = function(doctorId, day, startTime, actionVal) {
+      const doc = window.allDoctors.find(d => d.doctorId === doctorId);
+      if (!doc) return;
+      
+      // If actionVal is true (blocking), check for booked patients
+      if (actionVal) {
+        const bookedPatients = window.requestsList.filter(r => 
+          r.verdict === 'confirmed' && 
+          (r.assignedDoctor === doc.name || r.assignedDoctor === 'Dr. ' + doc.name || doc.name === 'Dr. ' + r.assignedDoctor) && 
+          r.confirmedSlot && 
+          r.confirmedSlot.day === day && 
+          r.confirmedSlot.time && r.confirmedSlot.time.startsWith(startTime)
+        );
+        
+        if (bookedPatients.length > 0) {
+          const modal = document.getElementById('conflict-modal');
+          const modalBody = document.getElementById('conflict-body-content');
+          
+          // Calculate department alternative slots
+          const sameDeptDocs = window.allDoctors.filter(d => d.specialization === doc.specialization);
+          const totalAltSlots = sameDeptDocs.reduce((acc, d) => 
+            acc + d.availableSlots.filter(s => !s.isBooked).length, 0
+          );
+          
+          modalBody.innerHTML = `
+            <div style="font-size: 0.95rem; margin-bottom: 15px; line-height: 1.5; color: var(--ink);">
+              This block affects <strong>${bookedPatients.length}</strong> patient(s) booked for <strong>${doc.name}</strong> on <strong>${day} (${startTime})</strong>.
+            </div>
+            <div style="background: #FFFDF5; border: 1px solid #FFEFC2; padding: 12px; border-radius: 8px; font-size: 0.85rem; color: #B06000; margin-bottom: 15px;">
+              💡 <strong>MediSlot AI Recommendation:</strong><br>
+              Found <strong>${totalAltSlots}</strong> alternative slots within the <strong>${doc.specialization}</strong> department. Auto-reschedule proposals can be dispatched immediately.
+            </div>
+            <div style="font-size: 0.85rem; color: var(--muted);">
+              <strong>Affected Patient(s):</strong>
+              <ul style="margin: 8px 0 0 20px; padding: 0;">
+                ${bookedPatients.map(p => `<li>${escapeHTML(p.patientName)} (ID: ${escapeHTML(p.patientId)}) - ${escapeHTML(p.patientPhone)}</li>`).join('')}
+              </ul>
+            </div>
+          `;
+          
+          document.getElementById('approve-dispatch-btn').onclick = async function() {
+            modal.classList.add('hidden');
+            await toggleSlot(doctorId, day, startTime, true);
+            alert(`Auto-reschedule proposals successfully dispatched to ${bookedPatients.length} patient(s).`);
+          };
+          
+          modal.classList.remove('hidden');
+          return;
+        }
+      }
+      
+      toggleSlot(doctorId, day, startTime, actionVal);
+    };
+
+    // Close conflict modal listeners
+    document.getElementById('close-conflict-btn').addEventListener('click', () => {
+      document.getElementById('conflict-modal').classList.add('hidden');
+    });
+    document.getElementById('cancel-conflict-btn').addEventListener('click', () => {
+      document.getElementById('conflict-modal').classList.add('hidden');
+    });
+    window.addEventListener('click', (e) => {
+      if (e.target === document.getElementById('conflict-modal')) {
+        document.getElementById('conflict-modal').classList.add('hidden');
+      }
+    });
+
     // CSV Download Utilities
     function downloadCSV(headers, rows, filename) {
       const csvContent = [
@@ -1319,13 +1928,15 @@
     }
 
     window.exportRequestsToCSV = function() {
-      const headers = ['Patient ID', 'Specialization', 'Verdict', 'Assigned Doctor', 'Confirmed Slot', 'Reasoning', 'Timestamp'];
+      const headers = ['Patient ID', 'Name', 'Phone', 'Specialization', 'Verdict', 'Assigned Doctor', 'Confirmed Slot', 'Reasoning', 'Timestamp'];
       const rows = (window.requestsList || []).map(req => {
         const slotStr = req.confirmedSlot && req.confirmedSlot.day
           ? `${req.confirmedSlot.day} ${req.confirmedSlot.time || ''}`
           : 'None';
         return [
           req.patientId,
+          req.patientName || 'N/A',
+          req.patientPhone || 'N/A',
           req.specializationRequested || 'None',
           req.verdict,
           req.assignedDoctor || 'Unassigned',

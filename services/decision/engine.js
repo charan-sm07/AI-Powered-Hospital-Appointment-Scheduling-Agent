@@ -22,13 +22,22 @@ export function calculateDoctorRecommendation(doc, patient, requestSlots, hasPer
   
   // Slot match: +20 points
   const slotScore = hasPerfectSlot ? 20 : 0;
+
+  // Preferred doctor match: +30 points
+  const isPreferred = requestSlots.preferredDoctor && (
+    doc.name.toLowerCase().includes(requestSlots.preferredDoctor.toLowerCase()) ||
+    requestSlots.preferredDoctor.toLowerCase().includes(doc.name.toLowerCase()) ||
+    doc.name.toLowerCase().replace('dr. ', '').includes(requestSlots.preferredDoctor.toLowerCase().replace('dr. ', ''))
+  );
+  const preferredScore = isPreferred ? 30 : 0;
   
   // Score formula
-  let score = (rating * 10) + (experience * 2) - (workload * 5) + insuranceScore + slotScore;
+  let score = (rating * 10) + (experience * 2) - (workload * 5) + insuranceScore + slotScore + preferredScore;
   score = Math.max(0, Math.min(100, Math.round(score)));
   
   // Reasons
   const reasons = [];
+  if (isPreferred) reasons.push('Preferred specialist chosen by patient');
   if (rating >= 4.7) reasons.push('Highest rating');
   if (experience >= 12) reasons.push('Extremely experienced specialist');
   if (workload <= 1) reasons.push('Lowest waiting time');
@@ -40,6 +49,7 @@ export function calculateDoctorRecommendation(doc, patient, requestSlots, hasPer
     doctorId: doc.doctorId,
     name: doc.name,
     score,
+    isPreferred: !!isPreferred,
     reasons,
     rating,
     experience,
@@ -142,8 +152,12 @@ export function rulesBasedSchedule(patient, requestSlots, availableDoctors) {
     };
   });
 
-  // Sort doctors from highest score to lowest
-  rankedDoctorsList.sort((a, b) => b.score - a.score);
+  // Sort doctors: preferred first, then by score descending
+  rankedDoctorsList.sort((a, b) => {
+    if (a.isPreferred && !b.isPreferred) return -1;
+    if (!a.isPreferred && b.isPreferred) return 1;
+    return b.score - a.score;
+  });
 
   // 1. Try to find a slot matching BOTH day (timeframe) and preferred time using ranked order
   for (const item of rankedDoctorsList) {
@@ -278,8 +292,8 @@ export async function generateAppointmentDecision(patient, requestSlots, availab
     ${JSON.stringify(ragChunks, null, 2)}
 
     Determine the verdict:
-    - "confirmed": If there is a matching doctor in the requested specialization, and they have an unbooked slot matching the patient's requested day (timeframe) and preferred time, and the patient's request adheres to policy (e.g. Cardiology needs 24hr advance, Orthopedics needs referral if new).
-    - "alternative_suggested": If a matching doctor exists but the requested slot is booked or doesn't match, or if a minor policy condition is met, suggest another available slot.
+    - "confirmed": If there is a matching doctor in the requested specialization, and they have an unbooked slot matching the patient's requested day (timeframe) and preferred time, and the patient's request adheres to policy (e.g. Cardiology needs 24hr advance, Orthopedics needs referral if new). If a 'preferredDoctor' is specified in BLOCK 2, prioritize scheduling with them if they have a slot matching the day and time.
+    - "alternative_suggested": If a matching doctor exists but the requested slot is booked or doesn't match, or if a minor policy condition is met, suggest another available slot. If a 'preferredDoctor' is specified in BLOCK 2, prefer suggesting an alternative slot with them rather than booking a perfect slot with another doctor, unless the patient has strict time preferences.
     - "waitlisted": If all matching doctors are fully booked, or no doctors match that specialization.
 
     You must output a raw JSON object and nothing else. Do not wrap in markdown blocks.
